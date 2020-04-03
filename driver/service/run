@@ -1,0 +1,3 @@
+#!/bin/sh
+exec 2>&1
+exec /opt/victronenergy/chargerybms/start-chargerybms.sh ttyUSB0
