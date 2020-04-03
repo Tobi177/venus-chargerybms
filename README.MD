@@ -21,7 +21,9 @@ This project embeds the Chargery BMS to a Victron Enegery Venus OS device to mon
  - TBD
 
 # Notes
+- Proof-of-Concept style
 - Only the Chargery BMS16T is currently supported. However the sources can very easily be changed to support BMS8T and BMS24T as well.
 - No multiple languages
 - No scripts to resetup the changes automatically on update of Venus OS
+- The devices are "hard-coded" at the qml files, must be adapted (VE.direct devices, etc) 
 
