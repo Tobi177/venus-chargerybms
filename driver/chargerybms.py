@@ -76,7 +76,6 @@ dbusservice.add_path('/Info/CurrentMode',         -1)
 dbusservice.add_path('/Info/Current',             -1)
 dbusservice.add_path('/Info/Temp/Sensor1',        -1)
 dbusservice.add_path('/Info/Temp/Sensor2',        -1)
-dbusservice.add_path('/Info/Capacity',            -1)
 dbusservice.add_path('/Info/ChargeEndVoltage',    -1)
 dbusservice.add_path('/Info/UpdateTimestamp',     -1)
 dbusservice.add_path('/Voltages/Cell1',           -1)
@@ -108,7 +107,6 @@ dbusservice.add_path('/Raw/Info/CurrentMode',         -1)
 dbusservice.add_path('/Raw/Info/Current',             -1)
 dbusservice.add_path('/Raw/Info/Temp/Sensor1',        -1)
 dbusservice.add_path('/Raw/Info/Temp/Sensor2',        -1)
-dbusservice.add_path('/Raw/Info/Capacity',            -1)
 dbusservice.add_path('/Raw/Info/ChargeEndVoltage',    -1)
 dbusservice.add_path('/Raw/Info/UpdateTimestamp',     -1)
 dbusservice.add_path('/Raw/Voltages/Cell1',           -1)
@@ -380,7 +378,7 @@ def parse_packet(packet):
 									BMS_STATUS['bms']['current_mode']['text']  = "Charge"
 									BMS_STATUS['bms']['current']['text'] = "+" + str(BMS_STATUS['bms']['current']['value']) + "A"
 								elif (bms_charge_mode == 0x02):
-									BMS_STATUS['bms']['current_mode']['value'] = 1
+									BMS_STATUS['bms']['current_mode']['value'] = 2
 									BMS_STATUS['bms']['current_mode']['text']  = "Storage"
 									BMS_STATUS['bms']['current']['text'] = str(BMS_STATUS['bms']['current']['value']) + "A"
 								else:
@@ -568,12 +566,6 @@ def parse_packet(packet):
 								BMS_STATUS['cells']['cell16_voltage']['text'] = "{:.3f}".format(BMS_STATUS['cells']['cell16_voltage']['value']) + "V"
 								dbusservice["/Voltages/Cell16"] = BMS_STATUS['cells']['cell16_voltage']['text']
 								dbusservice["/Raw/Voltages/Cell16"] = BMS_STATUS['cells']['cell16_voltage']['value']
-
-								# capacity value
-								BMS_STATUS['cells']['capacity']['value'] = ord(packet[36])
-								BMS_STATUS['cells']['capacity']['text'] = str(ord(packet[36])) + "Ah"
-								dbusservice["/Info/Capacity"] = BMS_STATUS['cells']['capacity']['text']
-								dbusservice["/Raw/Info/Capacity"] = BMS_STATUS['cells']['capacity']['value']
 
 								# get min/max voltages to calculate the diff
 								cell_voltages = []
