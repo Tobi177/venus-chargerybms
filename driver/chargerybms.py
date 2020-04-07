@@ -177,10 +177,6 @@ BMS_STATUS = {
 		}
 	},
 	'cells' : {
-		'capacity' : {
-			'value' : -1,
-			'text'  : ""
-		},
 		'cell1_voltage' : {
 			'value' : -1,
 			'text'  : ""
