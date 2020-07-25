@@ -11,7 +11,7 @@ MbPage {
 	model: VisualItemModel {
 
 		MbItemRow {
-			description: qsTr("Cells Min|Max|Diff")
+			description: qsTr("Voltages Min|Max|Diff")
 			values: [
 				MbTextBlock { item { bind: service.path("/Voltages/Min"); } width: 70; height: 25 },
 				MbTextBlock { item { bind: service.path("/Voltages/Max"); } width: 70; height: 25 },
@@ -45,7 +45,7 @@ MbPage {
 		}
 
 		MbItemRow {
-			description: qsTr("Cells Data Updated")
+			description: qsTr("Voltages Data Updated")
 			values: [
 				MbTextBlock { item { bind: service.path("/Voltages/UpdateTimestamp"); } width: 215; height: 25 }
 			]

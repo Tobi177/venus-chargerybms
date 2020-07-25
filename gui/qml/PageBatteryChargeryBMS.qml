@@ -20,17 +20,19 @@ MbPage {
 
 		MbItemRow {
 			id: battvol
-			description: qsTr("Battery Voltage")
+			description: qsTr("Battery")
 			values: [
-				MbTextBlock { item { bind: service.path("/Voltages/Sum"); } height: 25 }
+				MbTextBlock { item { bind: service.path("/Info/CurrentMode"); } height: 25 },
+				MbTextBlock { item { bind: service.path("/Info/Current"); } width: 70; height: 25 },
+				MbTextBlock { item { bind: service.path("/Voltages/Sum"); } width: 70; height: 25 }
 			]
 		}
 
 		MbItemRow {
 			description: qsTr("State of Charge")
 			values: [
-				MbTextBlock { item { bind: service.path("/Info/CurrentMode"); } height: 25 },
-				MbTextBlock { item { bind: service.path("/Info/Current"); } width: 70; height: 25 },
+				MbTextBlock { item { bind: service.path("/Voltages/BatteryCapacityWH"); } height: 25 },
+				MbTextBlock { item { bind: service.path("/Voltages/BatteryCapacityAH"); }  width: 70; height: 25 },
 				MbTextBlock { item { bind: service.path("/Info/Soc"); } width: 70; height: 25 }
 			]
 		}
@@ -62,9 +64,18 @@ MbPage {
 
 
 		MbSubMenu {
-			description: qsTr("Cells Details")
+			description: qsTr("Cells Voltages")
 			subpage: Component {
-				PageBatteryChargeryBMSDetails {
+				PageBatteryChargeryBMSVoltages {
+					bindPrefix: service.path("")
+				}
+			}
+		}
+
+		MbSubMenu {
+			description: qsTr("Cells Impedances")
+			subpage: Component {
+				PageBatteryChargeryBMSImpedances {
 					bindPrefix: service.path("")
 				}
 			}
