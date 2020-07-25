@@ -611,7 +611,7 @@ def parse_packet(packet):
 				if ((ord(packet[0]) == PACKET_HEADER) and (ord(packet[1]) == PACKET_HEADER)):
 					packet_length = ord(packet[3])
 					logging.debug("Packet Length [" + str (packet_length) + " bytes]")
-					debug_packet(packet)
+					# debug_packet(packet)
 		
 					if (ord(packet[2]) == PACKET_STATUS_BMS):
 					
@@ -1247,49 +1247,49 @@ def parse_packet(packet):
 
 								# cell impedances BMS8
 								BMS_STATUS['impedances']['cell1_impedance']['value'] = get_cell_impedance(ord(packet[7]), ord(packet[8]))
-								BMS_STATUS['impedances']['cell1_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell1_impedance']['value']) + "mOhm"
+								BMS_STATUS['impedances']['cell1_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell1_impedance']['value']) + "mOhm"
 								if args.victron:
 									dbusservice["/Impedances/Cell1"] = BMS_STATUS['impedances']['cell1_impedance']['text']
 									dbusservice["/Raw/Impedances/Cell1"] = BMS_STATUS['impedances']['cell1_impedance']['value']
 
 								BMS_STATUS['impedances']['cell2_impedance']['value'] = get_cell_impedance(ord(packet[9]), ord(packet[10]))
-								BMS_STATUS['impedances']['cell2_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell2_impedance']['value']) + "mOhm"
+								BMS_STATUS['impedances']['cell2_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell2_impedance']['value']) + "mOhm"
 								if args.victron:
 									dbusservice["/Impedances/Cell2"] = BMS_STATUS['impedances']['cell2_impedance']['text']
 									dbusservice["/Raw/Impedances/Cell2"] = BMS_STATUS['impedances']['cell2_impedance']['value']
 
 								BMS_STATUS['impedances']['cell3_impedance']['value'] = get_cell_impedance(ord(packet[11]), ord(packet[12]))
-								BMS_STATUS['impedances']['cell3_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell3_impedance']['value']) + "mOhm"
+								BMS_STATUS['impedances']['cell3_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell3_impedance']['value']) + "mOhm"
 								if args.victron:
 									dbusservice["/Impedances/Cell3"] = BMS_STATUS['impedances']['cell3_impedance']['text']
 									dbusservice["/Raw/Impedances/Cell3"] = BMS_STATUS['impedances']['cell3_impedance']['value']
 
 								BMS_STATUS['impedances']['cell4_impedance']['value'] = get_cell_impedance(ord(packet[13]), ord(packet[14]))
-								BMS_STATUS['impedances']['cell4_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell4_impedance']['value']) + "mOhm"
+								BMS_STATUS['impedances']['cell4_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell4_impedance']['value']) + "mOhm"
 								if args.victron:
 									dbusservice["/Impedances/Cell4"] = BMS_STATUS['impedances']['cell4_impedance']['text']
 									dbusservice["/Raw/Impedances/Cell4"] = BMS_STATUS['impedances']['cell4_impedance']['value']
 
 								BMS_STATUS['impedances']['cell5_impedance']['value'] = get_cell_impedance(ord(packet[15]), ord(packet[16]))
-								BMS_STATUS['impedances']['cell5_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell5_impedance']['value']) + "mOhm"
+								BMS_STATUS['impedances']['cell5_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell5_impedance']['value']) + "mOhm"
 								if args.victron:
 									dbusservice["/Impedances/Cell5"] = BMS_STATUS['impedances']['cell5_impedance']['text']
 									dbusservice["/Raw/Impedances/Cell5"] = BMS_STATUS['impedances']['cell5_impedance']['value']
 
 								BMS_STATUS['impedances']['cell6_impedance']['value'] = get_cell_impedance(ord(packet[17]), ord(packet[18]))
-								BMS_STATUS['impedances']['cell6_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell6_impedance']['value']) + "mOhm"
+								BMS_STATUS['impedances']['cell6_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell6_impedance']['value']) + "mOhm"
 								if args.victron:
 									dbusservice["/Impedances/Cell6"] = BMS_STATUS['impedances']['cell6_impedance']['text']
 									dbusservice["/Raw/Impedances/Cell6"] = BMS_STATUS['impedances']['cell6_impedance']['value']
 
 								BMS_STATUS['impedances']['cell7_impedance']['value'] = get_cell_impedance(ord(packet[19]), ord(packet[20]))
-								BMS_STATUS['impedances']['cell7_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell7_impedance']['value']) + "mOhm"
+								BMS_STATUS['impedances']['cell7_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell7_impedance']['value']) + "mOhm"
 								if args.victron:
 									dbusservice["/Impedances/Cell7"] = BMS_STATUS['impedances']['cell7_impedance']['text']
 									dbusservice["/Raw/Impedances/Cell7"] = BMS_STATUS['impedances']['cell7_impedance']['value']
 
 								BMS_STATUS['impedances']['cell8_impedance']['value'] = get_cell_impedance(ord(packet[21]), ord(packet[22]))
-								BMS_STATUS['impedances']['cell8_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell8_impedance']['value']) + "mOhm"
+								BMS_STATUS['impedances']['cell8_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell8_impedance']['value']) + "mOhm"
 								if args.victron:
 									dbusservice["/Impedances/Cell8"] = BMS_STATUS['impedances']['cell8_impedance']['text']
 									dbusservice["/Raw/Impedances/Cell8"] = BMS_STATUS['impedances']['cell8_impedance']['value']
@@ -1300,49 +1300,49 @@ def parse_packet(packet):
 
 									# cell impedances BMS8
 									BMS_STATUS['impedances']['cell9_impedance']['value'] = get_cell_impedance(ord(packet[23]), ord(packet[24]))
-									BMS_STATUS['impedances']['cell9_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell9_impedance']['value']) + "mOhm"
+									BMS_STATUS['impedances']['cell9_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell9_impedance']['value']) + "mOhm"
 									if args.victron:
 										dbusservice["/Impedances/Cell9"] = BMS_STATUS['impedances']['cell9_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell9"] = BMS_STATUS['impedances']['cell9_impedance']['value']
 
 									BMS_STATUS['impedances']['cell10_impedance']['value'] = get_cell_impedance(ord(packet[25]), ord(packet[26]))
-									BMS_STATUS['impedances']['cell10_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell10_impedance']['value']) + "mOhm"
+									BMS_STATUS['impedances']['cell10_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell10_impedance']['value']) + "mOhm"
 									if args.victron:
 										dbusservice["/Impedances/Cell10"] = BMS_STATUS['impedances']['cell10_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell10"] = BMS_STATUS['impedances']['cell10_impedance']['value']
 
 									BMS_STATUS['impedances']['cell11_impedance']['value'] = get_cell_impedance(ord(packet[27]), ord(packet[28]))
-									BMS_STATUS['impedances']['cell11_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell11_impedance']['value']) + "mOhm"
+									BMS_STATUS['impedances']['cell11_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell11_impedance']['value']) + "mOhm"
 									if args.victron:
 										dbusservice["/Impedances/Cell11"] = BMS_STATUS['impedances']['cell11_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell11"] = BMS_STATUS['impedances']['cell11_impedance']['value']
 
 									BMS_STATUS['impedances']['cell12_impedance']['value'] = get_cell_impedance(ord(packet[29]), ord(packet[30]))
-									BMS_STATUS['impedances']['cell12_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell12_impedance']['value']) + "mOhm"
+									BMS_STATUS['impedances']['cell12_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell12_impedance']['value']) + "mOhm"
 									if args.victron:
 										dbusservice["/Impedances/Cell12"] = BMS_STATUS['impedances']['cell12_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell12"] = BMS_STATUS['impedances']['cell12_impedance']['value']
 
 									BMS_STATUS['impedances']['cell13_impedance']['value'] = get_cell_impedance(ord(packet[31]), ord(packet[32]))
-									BMS_STATUS['impedances']['cell13_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell13_impedance']['value']) + "mOhm"
+									BMS_STATUS['impedances']['cell13_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell13_impedance']['value']) + "mOhm"
 									if args.victron:
 										dbusservice["/Impedances/Cell13"] = BMS_STATUS['impedances']['cell13_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell13"] = BMS_STATUS['impedances']['cell13_impedance']['value']
 
 									BMS_STATUS['impedances']['cell14_impedance']['value'] = get_cell_impedance(ord(packet[33]), ord(packet[34]))
-									BMS_STATUS['impedances']['cell14_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell14_impedance']['value']) + "mOhm"
+									BMS_STATUS['impedances']['cell14_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell14_impedance']['value']) + "mOhm"
 									if args.victron:
 										dbusservice["/Impedances/Cell14"] = BMS_STATUS['impedances']['cell14_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell14"] = BMS_STATUS['impedances']['cell14_impedance']['value']
 
 									BMS_STATUS['impedances']['cell15_impedance']['value'] = get_cell_impedance(ord(packet[35]), ord(packet[36]))
-									BMS_STATUS['impedances']['cell15_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell15_impedance']['value']) + "mOhm"
+									BMS_STATUS['impedances']['cell15_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell15_impedance']['value']) + "mOhm"
 									if args.victron:
 										dbusservice["/Impedances/Cell15"] = BMS_STATUS['impedances']['cell15_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell15"] = BMS_STATUS['impedances']['cell15_impedance']['value']
 
 									BMS_STATUS['impedances']['cell16_impedance']['value'] = get_cell_impedance(ord(packet[37]), ord(packet[38]))
-									BMS_STATUS['impedances']['cell16_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell16_impedance']['value']) + "mOhm"
+									BMS_STATUS['impedances']['cell16_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell16_impedance']['value']) + "mOhm"
 									if args.victron:
 										dbusservice["/Impedances/Cell16"] = BMS_STATUS['impedances']['cell16_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell16"] = BMS_STATUS['impedances']['cell16_impedance']['value']
@@ -1351,49 +1351,49 @@ def parse_packet(packet):
 								if (packet_length == PACKET_LENGTH_STATUS_IMPEDANCES[2]): # packet from BMS24
 
 									BMS_STATUS['impedances']['cell17_impedance']['value'] = get_cell_impedance(ord(packet[39]), ord(packet[40]))
-									BMS_STATUS['impedances']['cell17_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell17_impedance']['value']) + "mOhm"
+									BMS_STATUS['impedances']['cell17_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell17_impedance']['value']) + "mOhm"
 									if args.victron:
 										dbusservice["/Impedances/Cell17"] = BMS_STATUS['impedances']['cell17_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell17"] = BMS_STATUS['impedances']['cell17_impedance']['value']
 
 									BMS_STATUS['impedances']['cell18_impedance']['value'] = get_cell_impedance(ord(packet[41]), ord(packet[42]))
-									BMS_STATUS['impedances']['cell18_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell18_impedance']['value']) + "mOhm"
+									BMS_STATUS['impedances']['cell18_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell18_impedance']['value']) + "mOhm"
 									if args.victron:
 										dbusservice["/Impedances/Cell18"] = BMS_STATUS['impedances']['cell18_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell18"] = BMS_STATUS['impedances']['cell18_impedance']['value']
 
 									BMS_STATUS['impedances']['cell19_impedance']['value'] = get_cell_impedance(ord(packet[43]), ord(packet[44]))
-									BMS_STATUS['impedances']['cell19_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell19_impedance']['value']) + "mOhm"
+									BMS_STATUS['impedances']['cell19_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell19_impedance']['value']) + "mOhm"
 									if args.victron:
 										dbusservice["/Impedances/Cell19"] = BMS_STATUS['impedances']['cell19_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell19"] = BMS_STATUS['impedances']['cell19_impedance']['value']
 
 									BMS_STATUS['impedances']['cell20_impedance']['value'] = get_cell_impedance(ord(packet[45]), ord(packet[46]))
-									BMS_STATUS['impedances']['cell20_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell20_impedance']['value']) + "mOhm"
+									BMS_STATUS['impedances']['cell20_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell20_impedance']['value']) + "mOhm"
 									if args.victron:
 										dbusservice["/Impedances/Cell20"] = BMS_STATUS['impedances']['cell20_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell20"] = BMS_STATUS['impedances']['cell20_impedance']['value']
 
 									BMS_STATUS['impedances']['cell21_impedance']['value'] = get_cell_impedance(ord(packet[47]), ord(packet[48]))
-									BMS_STATUS['impedances']['cell21_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell21_impedance']['value']) + "mOhm"
+									BMS_STATUS['impedances']['cell21_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell21_impedance']['value']) + "mOhm"
 									if args.victron:
 										dbusservice["/Impedances/Cell21"] = BMS_STATUS['impedances']['cell21_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell21"] = BMS_STATUS['impedances']['cell21_impedance']['value']
 
 									BMS_STATUS['impedances']['cell22_impedance']['value'] = get_cell_impedance(ord(packet[49]), ord(packet[50]))
-									BMS_STATUS['impedances']['cell22_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell22_impedance']['value']) + "mOhm"
+									BMS_STATUS['impedances']['cell22_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell22_impedance']['value']) + "mOhm"
 									if args.victron:
 										dbusservice["/Impedances/Cell22"] = BMS_STATUS['impedances']['cell22_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell22"] = BMS_STATUS['impedances']['cell22_impedance']['value']
 
 									BMS_STATUS['impedances']['cell23_impedance']['value'] = get_cell_impedance(ord(packet[51]), ord(packet[52]))
-									BMS_STATUS['impedances']['cell23_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell23_impedance']['value']) + "mOhm"
+									BMS_STATUS['impedances']['cell23_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell23_impedance']['value']) + "mOhm"
 									if args.victron:
 										dbusservice["/Impedances/Cell23"] = BMS_STATUS['impedances']['cell23_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell23"] = BMS_STATUS['impedances']['cell23_impedance']['value']
 
 									BMS_STATUS['impedances']['cell24_impedance']['value'] = get_cell_impedance(ord(packet[53]), ord(packet[54]))
-									BMS_STATUS['impedances']['cell24_impedance']['text'] = "{:.3f}".format(BMS_STATUS['impedances']['cell24_impedance']['value']) + "mOhm"
+									BMS_STATUS['impedances']['cell24_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell24_impedance']['value']) + "mOhm"
 									if args.victron:
 										dbusservice["/Impedances/Cell24"] = BMS_STATUS['impedances']['cell24_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell24"] = BMS_STATUS['impedances']['cell24_impedance']['value']
@@ -1452,13 +1452,13 @@ def parse_packet(packet):
 									cell_impedances.append(BMS_STATUS['impedances']['cell24_impedance']['value'])
 									
 								BMS_STATUS['impedances']['agg_impedances']['sum']['value']  = sum(cell_impedances)
-								BMS_STATUS['impedances']['agg_impedances']['sum']['text']   = "{:.2f}".format(BMS_STATUS['impedances']['agg_impedances']['sum']['value']) + "mOhm" 
+								BMS_STATUS['impedances']['agg_impedances']['sum']['text']   = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['sum']['value']) + "mOhm" 
 								BMS_STATUS['impedances']['agg_impedances']['max']['value']  = max(cell_impedances)
-								BMS_STATUS['impedances']['agg_impedances']['max']['text']   = "{:.3f}".format(BMS_STATUS['impedances']['agg_impedances']['max']['value']) + "mOhm" 
+								BMS_STATUS['impedances']['agg_impedances']['max']['text']   = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['max']['value']) + "mOhm" 
 								BMS_STATUS['impedances']['agg_impedances']['min']['value']  = min(cell_impedances)
-								BMS_STATUS['impedances']['agg_impedances']['min']['text']   = "{:.3f}".format(BMS_STATUS['impedances']['agg_impedances']['min']['value']) + "mOhm" 
+								BMS_STATUS['impedances']['agg_impedances']['min']['text']   = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['min']['value']) + "mOhm" 
 								BMS_STATUS['impedances']['agg_impedances']['diff']['value'] = BMS_STATUS['impedances']['agg_impedances']['max']['value'] - BMS_STATUS['impedances']['agg_impedances']['min']['value']
-								BMS_STATUS['impedances']['agg_impedances']['diff']['text']  = "{:.3f}".format(BMS_STATUS['impedances']['agg_impedances']['diff']['value']) + "mOhm"
+								BMS_STATUS['impedances']['agg_impedances']['diff']['text']  = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['diff']['value']) + "mOhm"
 
 								if args.victron:
 									dbusservice["/Impedances/Sum"]      = BMS_STATUS['impedances']['agg_impedances']['sum']['text']
