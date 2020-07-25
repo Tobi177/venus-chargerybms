@@ -534,7 +534,7 @@ BMS_STATUS = {
 	
 }
 
-# exmaple network packets form the chargery community protocol manual v1.25
+# example network packets form the chargery community protocol manual v1.25
 BMS_TEST_PACKETS = {
 	1 : bytearray.fromhex('2424570F0E240100E6008100845B27'),
 	2 : bytearray.fromhex('2424570F0E240100E4008100845B25'),
