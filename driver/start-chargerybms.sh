@@ -10,7 +10,4 @@
 . /opt/victronenergy/serial-starter/run-service.sh
 
 app="/usr/bin/python /opt/victronenergy/chargerybms/chargerybms.py"
-verbose="--victron -v --log-before 25 --log-after 25"
-timeout=3
-
-start $verbose -t $timeout --banner -s /dev/$tty
+start -d /dev/$tty --victron

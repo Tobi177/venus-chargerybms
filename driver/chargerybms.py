@@ -39,10 +39,12 @@ parser = argparse.ArgumentParser(description = 'Chargery BMS driver')
 parser.add_argument('--version', action='version', version='%(prog)s v' + str(driver['version']) + ' (' + driver['serial'] + ')')
 parser.add_argument('--test', action="store_true", help='test some stored examples network packets')
 parser.add_argument('--victron', action="store_true", help='enable Victron DBUS support for VenusOS')
+requiredArguments = parser.add_argument_group('required arguments')
+requiredArguments.add_argument('-d', '--device', help='serial device for data (eg /dev/ttyUSB0)', required=True)
 args = parser.parse_args()
 
 
-serial_port = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
+serial_port = serial.Serial(args.device, 115200, timeout=1)
 serial_port.flushInput()
 logging.info(serial_port.name)  
 
