@@ -45,7 +45,8 @@ requiredArguments.add_argument('-d', '--device', help='serial device for data (e
 args = parser.parse_args()
 
 if args.debug: # switch to debug level
-	logging.setLevel(logging.DEBUG)
+	logger = logging.getLogger()
+	logger.setLevel(logging.DEBUG)
 
 
 serial_port = serial.Serial(args.device, 115200, timeout=1)
