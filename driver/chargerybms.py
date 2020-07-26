@@ -128,8 +128,8 @@ if args.victron:
 	dbusservice.add_path('/Voltages/BatteryCapacityWH',    -1)
 	dbusservice.add_path('/Voltages/BatteryCapacityAH',    -1)
 	dbusservice.add_path('/Voltages/UpdateTimestamp',      -1)
-	dbusservice.add_path('/Impedances/InstantCurrentMode', -1)
-	dbusservice.add_path('/Impedances/InstantCurrent',     -1)
+	dbusservice.add_path('/Impedances/CurrentMode1',       -1)
+	dbusservice.add_path('/Impedances/Current1',           -1)
 	dbusservice.add_path('/Impedances/Cell1',              -1)
 	dbusservice.add_path('/Impedances/Cell2',              -1)
 	dbusservice.add_path('/Impedances/Cell3',              -1)
@@ -200,8 +200,8 @@ if args.victron:
 	dbusservice.add_path('/Raw/Voltages/BatteryCapacityWH',    -1)
 	dbusservice.add_path('/Raw/Voltages/BatteryCapacityAH',    -1)
 	dbusservice.add_path('/Raw/Voltages/UpdateTimestamp',      -1)
-	dbusservice.add_path('/Raw/Impedances/InstantCurrentMode', -1)
-	dbusservice.add_path('/Raw/Impedances/InstantCurrent',     -1)
+	dbusservice.add_path('/Raw/Impedances/CurrentMode1',       -1)
+	dbusservice.add_path('/Raw/Impedances/Current1',           -1)
 	dbusservice.add_path('/Raw/Impedances/Cell1',              -1)
 	dbusservice.add_path('/Raw/Impedances/Cell2',              -1)
 	dbusservice.add_path('/Raw/Impedances/Cell3',              -1)
@@ -1283,6 +1283,11 @@ def parse_packet(packet):
 									BMS_STATUS['impedances']['current_mode1']['value'] = -1
 									BMS_STATUS['impedances']['current_mode1']['text']  = ""
 									BMS_STATUS['impedances']['current1']['text'] = ""
+								if args.victron:
+									dbusservice["/Impedances/CurrentMode1"] = BMS_STATUS['impedances']['current_mode1']['text']
+									dbusservice["/Raw/Impedances/CurrentMode1"] = BMS_STATUS['impedances']['current_mode1']['value']
+									dbusservice["/Impedances/Current1"] = BMS_STATUS['impedances']['current1']['text']
+									dbusservice["/Raw/Impedances/Current1"] = BMS_STATUS['impedances']['current1']['value']
 
 
 								# cell impedances BMS8

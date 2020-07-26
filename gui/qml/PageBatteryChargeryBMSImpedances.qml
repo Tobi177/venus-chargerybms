@@ -11,6 +11,15 @@ MbPage {
 	model: VisualItemModel {
 
 		MbItemRow {
+			id: currentState1
+			description: qsTr("Measured State")
+			values: [
+				MbTextBlock { item { bind: service.path("/Impedances/CurrentMode1"); } height: 25 },
+				MbTextBlock { item { bind: service.path("/Impedances/Current1"); } width: 70; height: 25 }
+			]
+		}
+
+		MbItemRow {
 			description: qsTr("Impedances Min|Max|Sum")
 			values: [
 				MbTextBlock { item { bind: service.path("/Impedances/Min"); } width: 70; height: 25 },
