@@ -409,6 +409,14 @@ BMS_STATUS = {
 		}
 	},
 	'impedances' : {
+		'current_mode1'    : {
+			'value' : -1,
+			'text'  : ""
+		},
+		'current1'        : {
+			'value' : -1,
+			'text' : ""
+		},
 		'cell1_impedance' : {
 			'value' : -1,
 			'text'  : ""
@@ -656,16 +664,16 @@ def parse_packet(packet):
 								BMS_STATUS['bms']['current']['value'] = get_current_value(ord(packet[7]), ord(packet[8]))
 
 								# charge mode
-								bms_charge_mode = ord(packet[6])
-								if (bms_charge_mode == 0x00):
+								bms_current_mode = ord(packet[6])
+								if (bms_current_mode == 0x00):
 									BMS_STATUS['bms']['current_mode']['value'] = 0
 									BMS_STATUS['bms']['current_mode']['text']  = "Discharge"
 									BMS_STATUS['bms']['current']['text'] = "-" + str(BMS_STATUS['bms']['current']['value']) + "A"
-								elif (bms_charge_mode == 0x01):
+								elif (bms_current_mode == 0x01):
 									BMS_STATUS['bms']['current_mode']['value'] = 1
 									BMS_STATUS['bms']['current_mode']['text']  = "Charge"
 									BMS_STATUS['bms']['current']['text'] = str(BMS_STATUS['bms']['current']['value']) + "A"
-								elif (bms_charge_mode == 0x02):
+								elif (bms_current_mode == 0x02):
 									BMS_STATUS['bms']['current_mode']['value'] = 2
 									BMS_STATUS['bms']['current_mode']['text']  = "Storage"
 									BMS_STATUS['bms']['current']['text'] = str(BMS_STATUS['bms']['current']['value']) + "A"
@@ -1256,6 +1264,27 @@ def parse_packet(packet):
 							# data integrity does match
 							if (checksum == checksum_check):
 
+								# Chargery protocol manual:
+								# Current 1 (A), It is instant current when measure cell impedance								
+								BMS_STATUS['impedances']['current1']['value'] = get_current1_value(ord(packet[5]), ord(packet[6]))
+
+								# Chargery protocol manual:
+								# Current mode 1 means battery is in charging or discharging when cell impedance is measured
+								bms_current_mode1 = ord(packet[4])
+								if (bms_current_mode1 == 0x00):
+									BMS_STATUS['impedances']['current_mode1']['value'] = 0
+									BMS_STATUS['impedances']['current_mode1']['text']  = "Discharge"
+									BMS_STATUS['impedances']['current1']['text'] = "-" + str(BMS_STATUS['impedances']['current1']['value']) + "A"
+								elif (bms_current_mode1 == 0x01):
+									BMS_STATUS['impedances']['current_mode1']['value'] = 1
+									BMS_STATUS['impedances']['current_mode1']['text']  = "Charge"
+									BMS_STATUS['impedances']['current1']['text'] = str(BMS_STATUS['impedances']['current1']['value']) + "A"
+								else:
+									BMS_STATUS['impedances']['current_mode1']['value'] = -1
+									BMS_STATUS['impedances']['current_mode1']['text']  = ""
+									BMS_STATUS['impedances']['current1']['text'] = ""
+
+
 								# cell impedances BMS8
 								BMS_STATUS['impedances']['cell1_impedance']['value'] = get_cell_impedance(ord(packet[7]), ord(packet[8]))
 								BMS_STATUS['impedances']['cell1_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell1_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm'] 
@@ -1495,6 +1524,8 @@ def parse_packet(packet):
 								if (packet_length == PACKET_LENGTH_STATUS_IMPEDANCES[0]): # packet from BMS8
 								
 									logging.info("BMS8 impedances " +
+										"][MODE1|" + BMS_STATUS['impedances']['current_mode1']['text'] + 
+										"][CURRENT1|" + BMS_STATUS['impedances']['current1']['text'] + 
 										"][SUM|" + BMS_STATUS['impedances']['agg_impedances']['sum']['text'] +
 										"][#1|"  + BMS_STATUS['impedances']['cell1_impedance']['text'] +
 										"][#2|"  + BMS_STATUS['impedances']['cell2_impedance']['text'] + 
@@ -1508,6 +1539,8 @@ def parse_packet(packet):
 								elif (packet_length == PACKET_LENGTH_STATUS_IMPEDANCES[1]): # packet from BMS16
 
 									logging.info("BMS16 impedances " +
+										"][MODE1|" + BMS_STATUS['impedances']['current_mode1']['text'] + 
+										"][CURRENT1|" + BMS_STATUS['impedances']['current1']['text'] + 
 										"][SUM|"  + BMS_STATUS['impedances']['agg_impedances']['sum']['text'] +
 										"][#1|"   + BMS_STATUS['impedances']['cell1_impedance']['text'] +
 										"][#2|"   + BMS_STATUS['impedances']['cell2_impedance']['text'] + 
@@ -1530,6 +1563,8 @@ def parse_packet(packet):
 								elif (packet_length == PACKET_LENGTH_STATUS_IMPEDANCES[2]): # packet from BMS24
 
 									logging.info("BMS24 impedances " +
+										"][MODE1|" + BMS_STATUS['impedances']['current_mode1']['text'] + 
+										"][CURRENT1|" + BMS_STATUS['impedances']['current1']['text'] + 
 										"][SUM|"  + BMS_STATUS['impedances']['agg_impedances']['sum']['text'] +
 										"][#1|"   + BMS_STATUS['impedances']['cell1_impedance']['text'] +
 										"][#2|"   + BMS_STATUS['impedances']['cell2_impedance']['text'] + 
