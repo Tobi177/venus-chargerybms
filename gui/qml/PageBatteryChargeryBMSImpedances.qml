@@ -7,6 +7,7 @@ MbPage {
 
 	property string bindPrefix
 	property BatteryDetails details: BatteryDetails { bindPrefix: root.bindPrefix }
+	title: service.description + " Impedances"
 
 	model: VisualItemModel {
 
