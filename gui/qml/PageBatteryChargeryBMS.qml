@@ -56,7 +56,7 @@ MbPage {
 		}
 
 		MbItemRow {
-			description: qsTr("Data Updated")
+			description: qsTr("Data Timestamp")
 			values: [
 				MbTextBlock { item { bind: service.path("/Info/UpdateTimestamp"); } width: 215; height: 25 }
 			]

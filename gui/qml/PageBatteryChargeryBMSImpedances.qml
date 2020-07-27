@@ -7,7 +7,7 @@ MbPage {
 
 	property string bindPrefix
 	property BatteryDetails details: BatteryDetails { bindPrefix: root.bindPrefix }
-	title: service.description + " Impedances"
+	title: service.description + " | Impedances"
 
 	model: VisualItemModel {
 
@@ -21,7 +21,7 @@ MbPage {
 		}
 
 		MbItemRow {
-			description: qsTr("Impedances Min|Max|Sum")
+			description: qsTr("Min|Max|Sum")
 			values: [
 				MbTextBlock { item { bind: service.path("/Impedances/Min"); } width: 70; height: 25 },
 				MbTextBlock { item { bind: service.path("/Impedances/Max"); } width: 70; height: 25 },
@@ -48,7 +48,7 @@ MbPage {
 		}
 
 		MbItemRow {
-			description: qsTr("Impedances Data Updated")
+			description: qsTr("Data Timestamp")
 			values: [
 				MbTextBlock { item { bind: service.path("/Impedances/UpdateTimestamp"); } width: 215; height: 25 }
 			]
