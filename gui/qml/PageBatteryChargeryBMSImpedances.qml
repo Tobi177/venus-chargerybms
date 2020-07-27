@@ -7,13 +7,13 @@ MbPage {
 
 	property string bindPrefix
 	property BatteryDetails details: BatteryDetails { bindPrefix: root.bindPrefix }
-	title: service.description + " | Impedances"
+	title: service.description + " | Cells Impedances"
 
 	model: VisualItemModel {
 
 		MbItemRow {
 			id: currentState1
-			description: qsTr("Measured State")
+			description: qsTr("Measured Current")
 			values: [
 				MbTextBlock { item { bind: service.path("/Impedances/CurrentMode1"); } width: 70; height: 25 },
 				MbTextBlock { item { bind: service.path("/Impedances/Current1"); } width: 70; height: 25 }
@@ -21,7 +21,7 @@ MbPage {
 		}
 
 		MbItemRow {
-			description: qsTr("Min|Max|Sum")
+			description: qsTr("Impedances (Min/Max/Sum)")
 			values: [
 				MbTextBlock { item { bind: service.path("/Impedances/Min"); } width: 70; height: 25 },
 				MbTextBlock { item { bind: service.path("/Impedances/Max"); } width: 70; height: 25 },
@@ -30,7 +30,7 @@ MbPage {
 		}
 
 		MbItemRow {
-			description: qsTr("Cells 1|2|3")
+			description: qsTr("Cells (1/2/3)")
 			values: [
 				MbTextBlock { item { bind: service.path("/Impedances/Cell1"); } width: 70; height: 25 },
 				MbTextBlock { item { bind: service.path("/Impedances/Cell2"); } width: 70; height: 25 },
@@ -39,7 +39,7 @@ MbPage {
 		}
 
 		MbItemRow {
-			description: qsTr("Cells 4|5|6")
+			description: qsTr("Cells (4/5/6)")
 			values: [
 				MbTextBlock { item { bind: service.path("/Impedances/Cell4"); } width: 70; height: 25 },
 				MbTextBlock { item { bind: service.path("/Impedances/Cell5"); } width: 70; height: 25 },

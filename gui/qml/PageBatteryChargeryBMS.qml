@@ -20,7 +20,7 @@ MbPage {
 
 		MbItemRow {
 			id: battvol
-			description: qsTr("Battery")
+			description: qsTr("Battery Status")
 			values: [
 				MbTextBlock { item { bind: service.path("/Info/CurrentMode"); } height: 25 },
 				MbTextBlock { item { bind: service.path("/Info/Current"); } width: 70; height: 25 },
@@ -38,7 +38,7 @@ MbPage {
 		}
 
 		MbItemRow {
-			description: qsTr("Temp Sensors 1|2")
+			description: qsTr("Temperature Sensors (1/2)")
 			values: [
 				MbTextBlock { item { bind: service.path("/Info/Temp/Sensor1"); } width: 70; height: 25 },
 				MbTextBlock { item { bind: service.path("/Info/Temp/Sensor2"); } width: 70; height: 25 }
@@ -47,7 +47,7 @@ MbPage {
 
 
 		MbItemRow {
-			description: qsTr("Cells Min|Max|Diff")
+			description: qsTr("Voltages (Min/Max/Diff)")
 			values: [
 				MbTextBlock { item { bind: service.path("/Voltages/Min"); } width: 70; height: 25 },
 				MbTextBlock { item { bind: service.path("/Voltages/Max"); } width: 70; height: 25 },

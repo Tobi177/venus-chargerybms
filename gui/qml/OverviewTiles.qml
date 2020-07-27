@@ -10,7 +10,7 @@ OverviewPage {
 	property string batteryPrefix: "com.victronenergy.battery.ttyO4"
 	property string chargeryBMSPrefix: "com.victronenergy.battery.ttyUSB0"
 
-	title: qsTr("Overview")
+	title: qsTr("System Overview")
 
 	function remainingTime(time, returninfinite) {
 
@@ -70,7 +70,7 @@ OverviewPage {
 					left: overviewRectangle.left; leftMargin: 8
 					verticalCenter: parent.verticalCenter
 				}
-				text: "Overview"
+				text: "System Overview"
 			}
 				
 			Text { 
@@ -105,7 +105,7 @@ OverviewPage {
 
 			MbItemRowTOBO {
 				id: batterySoc
-				description: qsTr("Used|Soc|Time")
+				description: qsTr("Used | Soc | Time")
 				
 				values: [
 					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/ConsumedAmphours"); width: 90; height: 25 },
@@ -117,7 +117,7 @@ OverviewPage {
 			MbItemRowTOBO {
 				id: batteryLoad
 			 	anchors.top: batterySoc.bottom
-				description: qsTr("Battery Usage")
+				description: qsTr("Battery Status")
 				values: [
 					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/Dc/0/Voltage"); width: 90; height: 25 },
 					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/Dc/0/Current"); width: 90; height: 25 },
@@ -136,7 +136,7 @@ OverviewPage {
 
 			MbItemRowTOBO {
 				id : pvStateDisplay
-				description: qsTr("State|Max V|W")
+				description: qsTr("State | Max (V/W)")
 
 				SystemState {
 					id: pvState
@@ -154,7 +154,7 @@ OverviewPage {
 			MbItemRowTOBO {
 				id : pvDisplay
 			 	anchors.top: pvStateDisplay.bottom
-				description: qsTr("Panels")
+				description: qsTr("Solar Status")
 
 				values: [
 					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/Pv/V"); width: 90; visible: true; height: 25 },
@@ -184,7 +184,7 @@ OverviewPage {
 
 			MbItemRowTOBO {
 				id : bmsCellView1
-				description: qsTr("Cells Min|Max|Diff")
+				description: qsTr("Volt (Min/Max/Diff)")
 				values: [
 					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Min"); width: 90; height: 25 },
 					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Max"); width: 90; height: 25 },
@@ -195,7 +195,7 @@ OverviewPage {
 			MbItemRowTOBO {
 				id : bmsCellView2
 			 	anchors.top: bmsCellView1.bottom
-				description: qsTr("Current|Temp")
+				description: qsTr("Current | Temp (1/2)")
 				values: [
 					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Info/Current"); width: 90; height: 25 },
 					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Info/Temp/Sensor1"); width: 90; height: 25 },
