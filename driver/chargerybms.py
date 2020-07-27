@@ -21,6 +21,7 @@ logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
     level=logging.INFO,
     datefmt='%Y-%m-%d %H:%M:%S')
+    # filename='log.txt')
 
 
 # connect and register to dbus
@@ -553,7 +554,7 @@ BMS_TEST_PACKETS = {
 	2 : bytearray.fromhex('2424570F0E240100E4008100845B25'),
 	3 : bytearray.fromhex('2424570F0E240100E1008300845B24'),
 	4 : bytearray.fromhex('2424562D0CFD0D040D040D020D030D040D060D010D080D020D050CFE0D060CFB0D0F0CFC76FED50263140E0095'),
-	5 : bytearray.fromhex('2424582801E4000100030003000300020003000000000001000100010000000500020003000300CC'),
+    5 : bytearray.fromhex('2424582801E4000100030003000300020003000000000001000100010000000500020003000300CC'),
 	6 : bytearray.fromhex('2424570F0E240100E4008300845B27')
 }
 
@@ -565,12 +566,12 @@ SPECIAL_DISPLAY_SYMBOLS = {
 }
 
 def debug_packet(packet):
-	print
-	for packet_byte in packet:
-	 	print ord(packet_byte),"[",packet_byte.encode("hex"),"]",
 
-	print
-	print
+	string_output = ""
+	for packet_byte in packet:
+		byte_string = str(ord(packet_byte)) + " [" + packet_byte.encode("hex") + "] "
+	 	string_output = string_output + byte_string
+	logging.debug(string_output);
 
 
 def get_header_position(packet):
@@ -614,6 +615,7 @@ def get_cell_impedance(byte1, byte2):
 
 def parse_packet(packet):
 	logging.debug("Parse Packet [" + str(len(packet)) + "] bytes")
+	debug_packet(packet)
 
 	while (len(packet) >= PACKET_LENGTH_MINIMUM): 
 		header_position = get_header_position(packet)
@@ -630,7 +632,7 @@ def parse_packet(packet):
 				if ((ord(packet[0]) == PACKET_HEADER) and (ord(packet[1]) == PACKET_HEADER)):
 					packet_length = ord(packet[3])
 					logging.debug("Packet Length [" + str (packet_length) + " bytes]")
-					# debug_packet(packet)
+					debug_packet(packet)
 		
 					if (ord(packet[2]) == PACKET_STATUS_BMS):
 					
