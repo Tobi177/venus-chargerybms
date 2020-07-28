@@ -55,6 +55,17 @@ MbPage {
 			]
 		}
 
+
+		MbItemRow {
+			description: qsTr("Impedances (Min/Max/Sum)")
+			values: [
+				MbTextBlock { item { bind: service.path("/Impedances/Min"); } width: 70; height: 25 },
+				MbTextBlock { item { bind: service.path("/Impedances/Max"); } width: 70; height: 25 },
+				MbTextBlock { item { bind: service.path("/Impedances/Sum"); } width: 70; height: 25 }
+			]
+		}
+
+
 		MbItemRow {
 			description: qsTr("Data Timestamp")
 			values: [
