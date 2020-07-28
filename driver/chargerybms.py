@@ -239,10 +239,17 @@ PACKET_STATUS_CELLS       = 0x56
 PACKET_STATUS_BMS         = 0x57
 PACKET_STATUS_IMPEDANCES  = 0x58
 
-PACKET_LENGTH_MINIMUM            = 15
+PACKET_LENGTH_MINIMUM            = 10
 PACKET_LENGTH_STATUS_CELLS       = [29, 45, 61]
 PACKET_LENGTH_STATUS_BMS         = [15]
-PACKET_LENGTH_STATUS_IMPEDANCES  = [24, 40, 56]
+
+# Special handling here: the impedances packet length is dynamically
+# and depends on how many cells are monitored. The minimum length of
+# the network packet with headers, command, length, currentmode1, current1
+# and checksum is 8 bytes. On 6monitored cells the packet length will
+# be 8+(2*6) = 20 bytes. Therefore, the smallest possible and valid
+# impedances network packet will be 10 bytes
+PACKET_LENGTH_STATUS_IMPEDANCES  = 10
 
 
 MIN_CELL_VOLTAGE   = 1.0
@@ -545,7 +552,6 @@ BMS_STATUS = {
 			'text'  : ""
 		}
 	}
-	
 }
 
 # example network packets form the chargery community protocol manual v1.25
@@ -555,7 +561,8 @@ BMS_TEST_PACKETS = {
 	3 : bytearray.fromhex('2424570F0E240100E1008300845B24'),
 	4 : bytearray.fromhex('2424562D0CFD0D040D040D020D030D040D060D010D080D020D050CFE0D060CFB0D0F0CFC76FED50263140E0095'),
     5 : bytearray.fromhex('2424582801E4000100030003000300020003000000000001000100010000000500020003000300CC'),
-	6 : bytearray.fromhex('2424570F0E240100E4008300845B27')
+	6 : bytearray.fromhex('2424570F0E240100E4008300845B27'),
+	7 : bytearray.fromhex('24245814012a000900040007000b000b00070010')
 }
 
 
@@ -564,6 +571,160 @@ SPECIAL_DISPLAY_SYMBOLS = {
 	'degree' : u'\u00b0',
 	'ohm'    : u'\u03A9'
 }
+
+
+def reset_status_values():
+
+	BMS_STATUS['bms']['charged_end_voltage']['value'] = -1
+	BMS_STATUS['bms']['charged_end_voltage']['text']  = ""
+	BMS_STATUS['bms']['current_mode']['value'] = -1
+	BMS_STATUS['bms']['current_mode']['text']  = ""
+	BMS_STATUS['bms']['current']['value'] = -1
+	BMS_STATUS['bms']['current']['text']  = ""
+	BMS_STATUS['bms']['temperature']['sensor_t1']['value'] = -1
+	BMS_STATUS['bms']['temperature']['sensor_t1']['text']  = ""
+	BMS_STATUS['bms']['temperature']['sensor_t2']['value'] = -1
+	BMS_STATUS['bms']['temperature']['sensor_t2']['text']  = ""
+	BMS_STATUS['bms']['soc']['value'] = -1
+	BMS_STATUS['bms']['soc']['text']  = ""
+	BMS_STATUS['bms']['timestamp']['value'] = -1
+	BMS_STATUS['bms']['timestamp']['text']  = ""
+
+
+def reset_impedances_values():
+
+	BMS_STATUS['impedances']['current_mode1']['value'] = -1
+	BMS_STATUS['impedances']['current_mode1']['text']  = ""
+	BMS_STATUS['impedances']['current1']['value'] = -1
+	BMS_STATUS['impedances']['current1']['text']  = ""
+	BMS_STATUS['impedances']['cell1_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell1_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell2_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell2_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell3_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell3_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell4_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell4_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell5_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell5_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell6_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell6_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell7_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell7_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell8_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell8_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell9_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell9_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell10_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell10_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell11_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell11_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell12_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell12_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell13_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell13_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell14_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell14_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell15_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell15_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell16_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell16_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell17_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell17_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell18_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell18_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell19_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell19_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell20_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell20_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell21_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell21_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell22_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell22_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell23_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell23_impedance']['text']  = ""
+	BMS_STATUS['impedances']['cell24_impedance']['value'] = -1
+	BMS_STATUS['impedances']['cell24_impedance']['text']  = ""
+	BMS_STATUS['impedances']['agg_impedances']['sum']['value'] = -1
+	BMS_STATUS['impedances']['agg_impedances']['sum']['text']  = ""
+	BMS_STATUS['impedances']['agg_impedances']['max']['value'] = -1
+	BMS_STATUS['impedances']['agg_impedances']['max']['text']  = ""
+	BMS_STATUS['impedances']['agg_impedances']['min']['value'] = -1
+	BMS_STATUS['impedances']['agg_impedances']['min']['text']  = ""
+	BMS_STATUS['impedances']['agg_impedances']['diff']['value'] = -1
+	BMS_STATUS['impedances']['agg_impedances']['diff']['text']  = ""
+	BMS_STATUS['impedances']['battery_capacity_wh']['value'] = -1
+	BMS_STATUS['impedances']['battery_capacity_wh']['text']  = ""
+	BMS_STATUS['impedances']['battery_capacity_ah']['value'] = -1
+	BMS_STATUS['impedances']['battery_capacity_ah']['text']  = ""
+	BMS_STATUS['impedances']['timestamp']['value'] = -1
+	BMS_STATUS['impedances']['timestamp']['text']  = ""
+
+
+def reset_voltages_values():
+	BMS_STATUS['voltages']['cell1_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell1_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell2_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell2_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell3_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell3_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell4_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell4_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell5_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell5_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell6_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell6_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell7_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell7_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell8_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell8_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell9_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell9_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell10_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell10_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell11_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell11_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell12_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell12_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell13_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell13_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell14_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell14_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell15_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell15_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell16_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell16_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell17_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell17_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell18_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell18_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell19_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell19_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell20_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell20_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell21_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell21_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell22_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell22_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell23_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell23_voltage']['text']  = ""
+	BMS_STATUS['voltages']['cell24_voltage']['value'] = -1
+	BMS_STATUS['voltages']['cell24_voltage']['text']  = ""
+	BMS_STATUS['voltages']['agg_voltages']['sum']['value'] = -1
+	BMS_STATUS['voltages']['agg_voltages']['sum']['text']  = ""
+	BMS_STATUS['voltages']['agg_voltages']['max']['value'] = -1
+	BMS_STATUS['voltages']['agg_voltages']['max']['text']  = ""
+	BMS_STATUS['voltages']['agg_voltages']['min']['value'] = -1
+	BMS_STATUS['voltages']['agg_voltages']['min']['text']  = ""
+	BMS_STATUS['voltages']['agg_voltages']['diff']['value'] = -1
+	BMS_STATUS['voltages']['agg_voltages']['diff']['text']  = ""
+	BMS_STATUS['voltages']['battery_capacity_wh']['value'] = -1
+	BMS_STATUS['voltages']['battery_capacity_wh']['text']  = ""
+	BMS_STATUS['voltages']['battery_capacity_ah']['value'] = -1
+	BMS_STATUS['voltages']['battery_capacity_ah']['text']  = ""
+	BMS_STATUS['voltages']['timestamp']['value'] = -1
+	BMS_STATUS['voltages']['timestamp']['text']  = ""
+
 
 def debug_packet(packet):
 
@@ -640,16 +801,17 @@ def parse_packet(packet):
 							logging.debug("Packet Status BMS too short, skip")
 							packet = ""
 						else:
+							# delete old data
+							reset_status_values()
 
 							# checksum value
-							checksum = ord(packet[14])
+							checksum = ord(packet[packet_length-1])
+							checksum_check = 0
 
 							# calculate checksum
-							checksum_check = (ord(packet[0])
-								+ ord(packet[1]) + ord(packet[2])  + ord(packet[3])  + ord(packet[4])
-								+ ord(packet[5]) + ord(packet[6])  + ord(packet[7])  + ord(packet[8])
-								+ ord(packet[9]) + ord(packet[10]) + ord(packet[11]) + ord(packet[12])
-								+ ord(packet[13])) % 256
+							for i in range(packet_length-1):
+								checksum_check = checksum_check + ord(packet[i])
+							checksum_check = checksum_check % 256
 							logging.debug("Packet Checksum : " + str(checksum) + "|" + str(checksum_check))
 							
 							# data integrity does match
@@ -738,10 +900,12 @@ def parse_packet(packet):
 							logging.debug("Packet Status Cells too short, skip")
 							packet = ""
 						else:
+							# delete old data
+							reset_voltages_values()
 
 							# checksum value
-							checksum       = 0
-							checksum_check = -1
+							checksum = -1
+							checksum_check = 0
 
 							if (packet_length == PACKET_LENGTH_STATUS_CELLS[0]): # packet from BMS8
 								logging.debug("Packet Status Cells BMS8")
@@ -750,20 +914,14 @@ def parse_packet(packet):
 									logging.debug("Packet Status Cells too short, skip")
 									packet = ""
 								else:
-
-									# checksum value
-									checksum = ord(packet[28])
+									checksum = ord(packet[packet_length-1])
 
 									# calculate checksum
-									checksum_check = (ord(packet[0])
-										+ ord(packet[1])  + ord(packet[2])  + ord(packet[3])  + ord(packet[4])  + ord(packet[5])
-										+ ord(packet[6])  + ord(packet[7])  + ord(packet[8])  + ord(packet[9])  + ord(packet[10])
-										+ ord(packet[11]) + ord(packet[12]) + ord(packet[13]) + ord(packet[14]) + ord(packet[15])
-										+ ord(packet[16]) + ord(packet[17]) + ord(packet[18]) + ord(packet[19]) + ord(packet[20])
-										+ ord(packet[21]) + ord(packet[22]) + ord(packet[23]) + ord(packet[24]) + ord(packet[25])
-										+ ord(packet[26]) + ord(packet[27])) % 256
+									for i in range(packet_length-1):
+										checksum_check = checksum_check + ord(packet[i])
+									checksum_check = checksum_check % 256
 									logging.debug("Packet Checksum BMS8: " + str(checksum) + "|" + str(checksum_check))
-							
+
 							elif (packet_length == PACKET_LENGTH_STATUS_CELLS[1]): # packet from BMS16
 								logging.debug("Packet Status Cells BMS16")
 
@@ -771,21 +929,12 @@ def parse_packet(packet):
 									logging.debug("Packet Status Cells too short, skip")
 									packet = ""
 								else:
-
-									# checksum value
-									checksum = ord(packet[44])
+									checksum = ord(packet[packet_length-1])
 
 									# calculate checksum
-									checksum_check = (ord(packet[0])
-										+ ord(packet[1])  + ord(packet[2])  + ord(packet[3])  + ord(packet[4])  + ord(packet[5])
-										+ ord(packet[6])  + ord(packet[7])  + ord(packet[8])  + ord(packet[9])  + ord(packet[10])
-										+ ord(packet[11]) + ord(packet[12]) + ord(packet[13]) + ord(packet[14]) + ord(packet[15])
-										+ ord(packet[16]) + ord(packet[17]) + ord(packet[18]) + ord(packet[19]) + ord(packet[20])
-										+ ord(packet[21]) + ord(packet[22]) + ord(packet[23]) + ord(packet[24]) + ord(packet[25])
-										+ ord(packet[26]) + ord(packet[27]) + ord(packet[28]) + ord(packet[29]) + ord(packet[30])
-										+ ord(packet[31]) + ord(packet[32]) + ord(packet[33]) + ord(packet[34]) + ord(packet[35])
-										+ ord(packet[36]) + ord(packet[37]) + ord(packet[38]) + ord(packet[39]) + ord(packet[40])
-										+ ord(packet[41]) + ord(packet[42]) + ord(packet[43])) % 256
+									for i in range(packet_length-1):
+										checksum_check = checksum_check + ord(packet[i])
+									checksum_check = checksum_check % 256
 									logging.debug("Packet Checksum BMS16: " + str(checksum) + "|" + str(checksum_check))
 							
 							elif (packet_length == PACKET_LENGTH_STATUS_CELLS[2]): # packet from BMS24 
@@ -795,25 +944,13 @@ def parse_packet(packet):
 									logging.debug("Packet Status Cells too short, skip")
 									packet = ""
 								else:
-
-									# checksum value
-									checksum = ord(packet[60])
+									checksum = ord(packet[packet_length-1])
 
 									# calculate checksum
-									checksum_check = (ord(packet[0])
-										+ ord(packet[1])  + ord(packet[2])  + ord(packet[3])  + ord(packet[4])  + ord(packet[5])
-										+ ord(packet[6])  + ord(packet[7])  + ord(packet[8])  + ord(packet[9])  + ord(packet[10])
-										+ ord(packet[11]) + ord(packet[12]) + ord(packet[13]) + ord(packet[14]) + ord(packet[15])
-										+ ord(packet[16]) + ord(packet[17]) + ord(packet[18]) + ord(packet[19]) + ord(packet[20])
-										+ ord(packet[21]) + ord(packet[22]) + ord(packet[23]) + ord(packet[24]) + ord(packet[25])
-										+ ord(packet[26]) + ord(packet[27]) + ord(packet[28]) + ord(packet[29]) + ord(packet[30])
-										+ ord(packet[31]) + ord(packet[32]) + ord(packet[33]) + ord(packet[34]) + ord(packet[35])
-										+ ord(packet[36]) + ord(packet[37]) + ord(packet[38]) + ord(packet[39]) + ord(packet[40])
-										+ ord(packet[41]) + ord(packet[42]) + ord(packet[43]) + ord(packet[44]) + ord(packet[45])
-										+ ord(packet[46]) + ord(packet[47]) + ord(packet[48]) + ord(packet[49]) + ord(packet[50])
-										+ ord(packet[51]) + ord(packet[52]) + ord(packet[53]) + ord(packet[54]) + ord(packet[55])
-										+ ord(packet[56]) + ord(packet[57]) + ord(packet[58]) + ord(packet[59])) % 256
-									logging.debug("Packet Checksum BMS16: " + str(checksum) + "|" + str(checksum_check))
+									for i in range(packet_length-1):
+										checksum_check = checksum_check + ord(packet[i])
+									checksum_check = checksum_check % 256
+									logging.debug("Packet Checksum BMS24: " + str(checksum) + "|" + str(checksum_check))
 
 
 							# data integrity does match
@@ -1184,83 +1321,25 @@ def parse_packet(packet):
 
 					elif (ord(packet[2]) == PACKET_STATUS_IMPEDANCES):
 
-						if (len(packet) < PACKET_LENGTH_STATUS_IMPEDANCES[0]):
+						if (len(packet) < PACKET_LENGTH_STATUS_IMPEDANCES):
 							logging.debug("Packet Impedances Cells too short, skip")
 							packet = ""
 						else:
+							# delete old data
+							reset_impedances_values()
+
+							cell_count = (packet_length - 8) / 2;
+							logging.debug("Packet Impedances, detected cells: #" + str(cell_count))
 
 							# checksum value
-							checksum       = 0
-							checksum_check = -1
+							checksum = ord(packet[packet_length-1])
+							checksum_check = 0
 
-							if (packet_length == PACKET_LENGTH_STATUS_IMPEDANCES[0]): # packet from BMS8
-								logging.debug("Packet Impedances Cells BMS8")
-
-								if (len(packet) < PACKET_LENGTH_STATUS_IMPEDANCES[0]):
-									logging.debug("Packet Impedances Cells too short, skip")
-									packet = ""
-								else:
-
-									# checksum value
-									checksum = ord(packet[23])
-
-									# calculate checksum
-									checksum_check = (ord(packet[0])
-										+ ord(packet[1])  + ord(packet[2])  + ord(packet[3])  + ord(packet[4])  + ord(packet[5])
-										+ ord(packet[6])  + ord(packet[7])  + ord(packet[8])  + ord(packet[9])  + ord(packet[10])
-										+ ord(packet[11]) + ord(packet[12]) + ord(packet[13]) + ord(packet[14]) + ord(packet[15])
-										+ ord(packet[16]) + ord(packet[17]) + ord(packet[18]) + ord(packet[19]) + ord(packet[20])
-										+ ord(packet[21]) + ord(packet[22])) % 256
-									logging.debug("Packet Checksum BMS8: " + str(checksum) + "|" + str(checksum_check))
-							
-							elif (packet_length == PACKET_LENGTH_STATUS_IMPEDANCES[1]): # packet from BMS16
-								logging.debug("Packet Impedances Cells BMS16")
-
-								if (len(packet) < PACKET_LENGTH_STATUS_IMPEDANCES[1]):
-									logging.debug("Packet Impedances Cells too short, skip")
-									packet = ""
-								else:
-
-									# checksum value
-									checksum = ord(packet[39])
-
-									# calculate checksum
-									checksum_check = (ord(packet[0])
-										+ ord(packet[1])  + ord(packet[2])  + ord(packet[3])  + ord(packet[4])  + ord(packet[5])
-										+ ord(packet[6])  + ord(packet[7])  + ord(packet[8])  + ord(packet[9])  + ord(packet[10])
-										+ ord(packet[11]) + ord(packet[12]) + ord(packet[13]) + ord(packet[14]) + ord(packet[15])
-										+ ord(packet[16]) + ord(packet[17]) + ord(packet[18]) + ord(packet[19]) + ord(packet[20])
-										+ ord(packet[21]) + ord(packet[22]) + ord(packet[23]) + ord(packet[24]) + ord(packet[25])
-										+ ord(packet[26]) + ord(packet[27]) + ord(packet[28]) + ord(packet[29]) + ord(packet[30])
-										+ ord(packet[31]) + ord(packet[32]) + ord(packet[33]) + ord(packet[34]) + ord(packet[35])
-										+ ord(packet[36]) + ord(packet[37]) + ord(packet[38])) % 256
-									logging.debug("Packet Checksum BMS16: " + str(checksum) + "|" + str(checksum_check))
-							
-							elif (packet_length == PACKET_LENGTH_STATUS_IMPEDANCES[2]): # packet from BMS24 
-								logging.debug("Packet Impedances Cells BMS24")
-
-								if (len(packet) < PACKET_LENGTH_STATUS_IMPEDANCES[2]):
-									logging.debug("Packet Impedances Cells too short, skip")
-									packet = ""
-								else:
-
-									# checksum value
-									checksum = ord(packet[55])
-
-									# calculate checksum
-									checksum_check = (ord(packet[0])
-										+ ord(packet[1])  + ord(packet[2])  + ord(packet[3])  + ord(packet[4])  + ord(packet[5])
-										+ ord(packet[6])  + ord(packet[7])  + ord(packet[8])  + ord(packet[9])  + ord(packet[10])
-										+ ord(packet[11]) + ord(packet[12]) + ord(packet[13]) + ord(packet[14]) + ord(packet[15])
-										+ ord(packet[16]) + ord(packet[17]) + ord(packet[18]) + ord(packet[19]) + ord(packet[20])
-										+ ord(packet[21]) + ord(packet[22]) + ord(packet[23]) + ord(packet[24]) + ord(packet[25])
-										+ ord(packet[26]) + ord(packet[27]) + ord(packet[28]) + ord(packet[29]) + ord(packet[30])
-										+ ord(packet[31]) + ord(packet[32]) + ord(packet[33]) + ord(packet[34]) + ord(packet[35])
-										+ ord(packet[36]) + ord(packet[37]) + ord(packet[38]) + ord(packet[39]) + ord(packet[40])
-										+ ord(packet[41]) + ord(packet[42]) + ord(packet[43]) + ord(packet[44]) + ord(packet[45])
-										+ ord(packet[46]) + ord(packet[47]) + ord(packet[48]) + ord(packet[49]) + ord(packet[50])
-										+ ord(packet[51]) + ord(packet[52]) + ord(packet[53]) + ord(packet[54])) % 256
-									logging.debug("Packet Checksum BMS16: " + str(checksum) + "|" + str(checksum_check))
+							# calculate checksum
+							for i in range(packet_length-1):
+								checksum_check = checksum_check + ord(packet[i])
+							checksum_check = checksum_check % 256
+							logging.debug("Packet Checksum BMS: " + str(checksum) + "|" + str(checksum_check))
 
 
 							# data integrity does match
@@ -1291,159 +1370,13 @@ def parse_packet(packet):
 									dbusservice["/Impedances/Current1"] = BMS_STATUS['impedances']['current1']['text']
 									dbusservice["/Raw/Impedances/Current1"] = BMS_STATUS['impedances']['current1']['value']
 
-
-								# cell impedances BMS8
-								BMS_STATUS['impedances']['cell1_impedance']['value'] = get_cell_impedance(ord(packet[7]), ord(packet[8]))
-								BMS_STATUS['impedances']['cell1_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell1_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm'] 
-								if args.victron:
-									dbusservice["/Impedances/Cell1"] = BMS_STATUS['impedances']['cell1_impedance']['text']
-									dbusservice["/Raw/Impedances/Cell1"] = BMS_STATUS['impedances']['cell1_impedance']['value']
-
-								BMS_STATUS['impedances']['cell2_impedance']['value'] = get_cell_impedance(ord(packet[9]), ord(packet[10]))
-								BMS_STATUS['impedances']['cell2_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell2_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-								if args.victron:
-									dbusservice["/Impedances/Cell2"] = BMS_STATUS['impedances']['cell2_impedance']['text']
-									dbusservice["/Raw/Impedances/Cell2"] = BMS_STATUS['impedances']['cell2_impedance']['value']
-
-								BMS_STATUS['impedances']['cell3_impedance']['value'] = get_cell_impedance(ord(packet[11]), ord(packet[12]))
-								BMS_STATUS['impedances']['cell3_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell3_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-								if args.victron:
-									dbusservice["/Impedances/Cell3"] = BMS_STATUS['impedances']['cell3_impedance']['text']
-									dbusservice["/Raw/Impedances/Cell3"] = BMS_STATUS['impedances']['cell3_impedance']['value']
-
-								BMS_STATUS['impedances']['cell4_impedance']['value'] = get_cell_impedance(ord(packet[13]), ord(packet[14]))
-								BMS_STATUS['impedances']['cell4_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell4_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-								if args.victron:
-									dbusservice["/Impedances/Cell4"] = BMS_STATUS['impedances']['cell4_impedance']['text']
-									dbusservice["/Raw/Impedances/Cell4"] = BMS_STATUS['impedances']['cell4_impedance']['value']
-
-								BMS_STATUS['impedances']['cell5_impedance']['value'] = get_cell_impedance(ord(packet[15]), ord(packet[16]))
-								BMS_STATUS['impedances']['cell5_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell5_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-								if args.victron:
-									dbusservice["/Impedances/Cell5"] = BMS_STATUS['impedances']['cell5_impedance']['text']
-									dbusservice["/Raw/Impedances/Cell5"] = BMS_STATUS['impedances']['cell5_impedance']['value']
-
-								BMS_STATUS['impedances']['cell6_impedance']['value'] = get_cell_impedance(ord(packet[17]), ord(packet[18]))
-								BMS_STATUS['impedances']['cell6_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell6_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-								if args.victron:
-									dbusservice["/Impedances/Cell6"] = BMS_STATUS['impedances']['cell6_impedance']['text']
-									dbusservice["/Raw/Impedances/Cell6"] = BMS_STATUS['impedances']['cell6_impedance']['value']
-
-								BMS_STATUS['impedances']['cell7_impedance']['value'] = get_cell_impedance(ord(packet[19]), ord(packet[20]))
-								BMS_STATUS['impedances']['cell7_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell7_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-								if args.victron:
-									dbusservice["/Impedances/Cell7"] = BMS_STATUS['impedances']['cell7_impedance']['text']
-									dbusservice["/Raw/Impedances/Cell7"] = BMS_STATUS['impedances']['cell7_impedance']['value']
-
-								BMS_STATUS['impedances']['cell8_impedance']['value'] = get_cell_impedance(ord(packet[21]), ord(packet[22]))
-								BMS_STATUS['impedances']['cell8_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell8_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-								if args.victron:
-									dbusservice["/Impedances/Cell8"] = BMS_STATUS['impedances']['cell8_impedance']['text']
-									dbusservice["/Raw/Impedances/Cell8"] = BMS_STATUS['impedances']['cell8_impedance']['value']
-
-
-								if (packet_length == PACKET_LENGTH_STATUS_IMPEDANCES[1]): # packet from BMS16
-
-
-									# cell impedances BMS8
-									BMS_STATUS['impedances']['cell9_impedance']['value'] = get_cell_impedance(ord(packet[23]), ord(packet[24]))
-									BMS_STATUS['impedances']['cell9_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell9_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
+								for i in range(1, cell_count+1):
+									BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['value'] = get_cell_impedance(ord(packet[7+(2*(i-1))]), ord(packet[8+(2*(i-1))]))
+									BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
 									if args.victron:
-										dbusservice["/Impedances/Cell9"] = BMS_STATUS['impedances']['cell9_impedance']['text']
-										dbusservice["/Raw/Impedances/Cell9"] = BMS_STATUS['impedances']['cell9_impedance']['value']
+										dbusservice["/Impedances/Cell"+str(i)] = BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['text']
+										dbusservice["/Raw/Impedances/Cell"+str(i)] = BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['value']
 
-									BMS_STATUS['impedances']['cell10_impedance']['value'] = get_cell_impedance(ord(packet[25]), ord(packet[26]))
-									BMS_STATUS['impedances']['cell10_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell10_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-									if args.victron:
-										dbusservice["/Impedances/Cell10"] = BMS_STATUS['impedances']['cell10_impedance']['text']
-										dbusservice["/Raw/Impedances/Cell10"] = BMS_STATUS['impedances']['cell10_impedance']['value']
-
-									BMS_STATUS['impedances']['cell11_impedance']['value'] = get_cell_impedance(ord(packet[27]), ord(packet[28]))
-									BMS_STATUS['impedances']['cell11_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell11_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-									if args.victron:
-										dbusservice["/Impedances/Cell11"] = BMS_STATUS['impedances']['cell11_impedance']['text']
-										dbusservice["/Raw/Impedances/Cell11"] = BMS_STATUS['impedances']['cell11_impedance']['value']
-
-									BMS_STATUS['impedances']['cell12_impedance']['value'] = get_cell_impedance(ord(packet[29]), ord(packet[30]))
-									BMS_STATUS['impedances']['cell12_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell12_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-									if args.victron:
-										dbusservice["/Impedances/Cell12"] = BMS_STATUS['impedances']['cell12_impedance']['text']
-										dbusservice["/Raw/Impedances/Cell12"] = BMS_STATUS['impedances']['cell12_impedance']['value']
-
-									BMS_STATUS['impedances']['cell13_impedance']['value'] = get_cell_impedance(ord(packet[31]), ord(packet[32]))
-									BMS_STATUS['impedances']['cell13_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell13_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-									if args.victron:
-										dbusservice["/Impedances/Cell13"] = BMS_STATUS['impedances']['cell13_impedance']['text']
-										dbusservice["/Raw/Impedances/Cell13"] = BMS_STATUS['impedances']['cell13_impedance']['value']
-
-									BMS_STATUS['impedances']['cell14_impedance']['value'] = get_cell_impedance(ord(packet[33]), ord(packet[34]))
-									BMS_STATUS['impedances']['cell14_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell14_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-									if args.victron:
-										dbusservice["/Impedances/Cell14"] = BMS_STATUS['impedances']['cell14_impedance']['text']
-										dbusservice["/Raw/Impedances/Cell14"] = BMS_STATUS['impedances']['cell14_impedance']['value']
-
-									BMS_STATUS['impedances']['cell15_impedance']['value'] = get_cell_impedance(ord(packet[35]), ord(packet[36]))
-									BMS_STATUS['impedances']['cell15_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell15_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-									if args.victron:
-										dbusservice["/Impedances/Cell15"] = BMS_STATUS['impedances']['cell15_impedance']['text']
-										dbusservice["/Raw/Impedances/Cell15"] = BMS_STATUS['impedances']['cell15_impedance']['value']
-
-									BMS_STATUS['impedances']['cell16_impedance']['value'] = get_cell_impedance(ord(packet[37]), ord(packet[38]))
-									BMS_STATUS['impedances']['cell16_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell16_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-									if args.victron:
-										dbusservice["/Impedances/Cell16"] = BMS_STATUS['impedances']['cell16_impedance']['text']
-										dbusservice["/Raw/Impedances/Cell16"] = BMS_STATUS['impedances']['cell16_impedance']['value']
-
-
-								if (packet_length == PACKET_LENGTH_STATUS_IMPEDANCES[2]): # packet from BMS24
-
-									BMS_STATUS['impedances']['cell17_impedance']['value'] = get_cell_impedance(ord(packet[39]), ord(packet[40]))
-									BMS_STATUS['impedances']['cell17_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell17_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-									if args.victron:
-										dbusservice["/Impedances/Cell17"] = BMS_STATUS['impedances']['cell17_impedance']['text']
-										dbusservice["/Raw/Impedances/Cell17"] = BMS_STATUS['impedances']['cell17_impedance']['value']
-
-									BMS_STATUS['impedances']['cell18_impedance']['value'] = get_cell_impedance(ord(packet[41]), ord(packet[42]))
-									BMS_STATUS['impedances']['cell18_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell18_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-									if args.victron:
-										dbusservice["/Impedances/Cell18"] = BMS_STATUS['impedances']['cell18_impedance']['text']
-										dbusservice["/Raw/Impedances/Cell18"] = BMS_STATUS['impedances']['cell18_impedance']['value']
-
-									BMS_STATUS['impedances']['cell19_impedance']['value'] = get_cell_impedance(ord(packet[43]), ord(packet[44]))
-									BMS_STATUS['impedances']['cell19_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell19_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-									if args.victron:
-										dbusservice["/Impedances/Cell19"] = BMS_STATUS['impedances']['cell19_impedance']['text']
-										dbusservice["/Raw/Impedances/Cell19"] = BMS_STATUS['impedances']['cell19_impedance']['value']
-
-									BMS_STATUS['impedances']['cell20_impedance']['value'] = get_cell_impedance(ord(packet[45]), ord(packet[46]))
-									BMS_STATUS['impedances']['cell20_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell20_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-									if args.victron:
-										dbusservice["/Impedances/Cell20"] = BMS_STATUS['impedances']['cell20_impedance']['text']
-										dbusservice["/Raw/Impedances/Cell20"] = BMS_STATUS['impedances']['cell20_impedance']['value']
-
-									BMS_STATUS['impedances']['cell21_impedance']['value'] = get_cell_impedance(ord(packet[47]), ord(packet[48]))
-									BMS_STATUS['impedances']['cell21_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell21_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-									if args.victron:
-										dbusservice["/Impedances/Cell21"] = BMS_STATUS['impedances']['cell21_impedance']['text']
-										dbusservice["/Raw/Impedances/Cell21"] = BMS_STATUS['impedances']['cell21_impedance']['value']
-
-									BMS_STATUS['impedances']['cell22_impedance']['value'] = get_cell_impedance(ord(packet[49]), ord(packet[50]))
-									BMS_STATUS['impedances']['cell22_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell22_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-									if args.victron:
-										dbusservice["/Impedances/Cell22"] = BMS_STATUS['impedances']['cell22_impedance']['text']
-										dbusservice["/Raw/Impedances/Cell22"] = BMS_STATUS['impedances']['cell22_impedance']['value']
-
-									BMS_STATUS['impedances']['cell23_impedance']['value'] = get_cell_impedance(ord(packet[51]), ord(packet[52]))
-									BMS_STATUS['impedances']['cell23_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell23_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-									if args.victron:
-										dbusservice["/Impedances/Cell23"] = BMS_STATUS['impedances']['cell23_impedance']['text']
-										dbusservice["/Raw/Impedances/Cell23"] = BMS_STATUS['impedances']['cell23_impedance']['value']
-
-									BMS_STATUS['impedances']['cell24_impedance']['value'] = get_cell_impedance(ord(packet[53]), ord(packet[54]))
-									BMS_STATUS['impedances']['cell24_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell24_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
-									if args.victron:
-										dbusservice["/Impedances/Cell24"] = BMS_STATUS['impedances']['cell24_impedance']['text']
-										dbusservice["/Raw/Impedances/Cell24"] = BMS_STATUS['impedances']['cell24_impedance']['value']
 
 								
 								# get min/max impedances to calculate the diff
@@ -1525,78 +1458,35 @@ def parse_packet(packet):
 								if args.victron:
 									dbusservice["/Impedances/UpdateTimestamp"] = BMS_STATUS['impedances']['timestamp']['text']
 									dbusservice["/Raw/Impedances/UpdateTimestamp"] = BMS_STATUS['impedances']['timestamp']['value']
-									
 
-								# print (BMS_STATUS)
-								if (packet_length == PACKET_LENGTH_STATUS_IMPEDANCES[0]): # packet from BMS8
-								
-									logging.info("BMS8 impedances " +
-										"][MODE1|" + BMS_STATUS['impedances']['current_mode1']['text'] + 
-										"][CURRENT1|" + BMS_STATUS['impedances']['current1']['text'] + 
-										"][SUM|" + BMS_STATUS['impedances']['agg_impedances']['sum']['text'] +
-										"][#1|"  + BMS_STATUS['impedances']['cell1_impedance']['text'] +
-										"][#2|"  + BMS_STATUS['impedances']['cell2_impedance']['text'] + 
-										"][#3|"  + BMS_STATUS['impedances']['cell3_impedance']['text'] + 
-										"][#4|"  + BMS_STATUS['impedances']['cell4_impedance']['text'] +
-										"][#5|"  + BMS_STATUS['impedances']['cell5_impedance']['text'] +
-										"][#6|"  + BMS_STATUS['impedances']['cell6_impedance']['text'] +
-										"][#7|"  + BMS_STATUS['impedances']['cell7_impedance']['text'] +
-										"][#8|"  + BMS_STATUS['impedances']['cell8_impedance']['text'] + "]")
-
-								elif (packet_length == PACKET_LENGTH_STATUS_IMPEDANCES[1]): # packet from BMS16
-
-									logging.info("BMS16 impedances " +
-										"][MODE1|" + BMS_STATUS['impedances']['current_mode1']['text'] + 
-										"][CURRENT1|" + BMS_STATUS['impedances']['current1']['text'] + 
-										"][SUM|"  + BMS_STATUS['impedances']['agg_impedances']['sum']['text'] +
-										"][#1|"   + BMS_STATUS['impedances']['cell1_impedance']['text'] +
-										"][#2|"   + BMS_STATUS['impedances']['cell2_impedance']['text'] + 
-										"][#3|"   + BMS_STATUS['impedances']['cell3_impedance']['text'] + 
-										"][#4|"   + BMS_STATUS['impedances']['cell4_impedance']['text'] +
-										"][#5|"   + BMS_STATUS['impedances']['cell5_impedance']['text'] +
-										"][#6|"   + BMS_STATUS['impedances']['cell6_impedance']['text'] +
-										"][#7|"   + BMS_STATUS['impedances']['cell7_impedance']['text'] +
-										"][#8|"   + BMS_STATUS['impedances']['cell8_impedance']['text'] +
-										"][#9|"   + BMS_STATUS['impedances']['cell9_impedance']['text'] + 
-										"][#10|"  + BMS_STATUS['impedances']['cell10_impedance']['text'] + 
-										"][#11|"  + BMS_STATUS['impedances']['cell11_impedance']['text'] +
-										"][#12|"  + BMS_STATUS['impedances']['cell12_impedance']['text'] +
-										"][#13|"  + BMS_STATUS['impedances']['cell13_impedance']['text'] +
-										"][#14|"  + BMS_STATUS['impedances']['cell14_impedance']['text'] +
-										"][#15|"  + BMS_STATUS['impedances']['cell15_impedance']['text'] +
-										"][#16|"  + BMS_STATUS['impedances']['cell16_impedance']['text'] + "]")
-								
-
-								elif (packet_length == PACKET_LENGTH_STATUS_IMPEDANCES[2]): # packet from BMS24
-
-									logging.info("BMS24 impedances " +
-										"][MODE1|" + BMS_STATUS['impedances']['current_mode1']['text'] + 
-										"][CURRENT1|" + BMS_STATUS['impedances']['current1']['text'] + 
-										"][SUM|"  + BMS_STATUS['impedances']['agg_impedances']['sum']['text'] +
-										"][#1|"   + BMS_STATUS['impedances']['cell1_impedance']['text'] +
-										"][#2|"   + BMS_STATUS['impedances']['cell2_impedance']['text'] + 
-										"][#3|"   + BMS_STATUS['impedances']['cell3_impedance']['text'] + 
-										"][#4|"   + BMS_STATUS['impedances']['cell4_impedance']['text'] +
-										"][#5|"   + BMS_STATUS['impedances']['cell5_impedance']['text'] +
-										"][#6|"   + BMS_STATUS['impedances']['cell6_impedance']['text'] +
-										"][#7|"   + BMS_STATUS['impedances']['cell7_impedance']['text'] +
-										"][#8|"   + BMS_STATUS['impedances']['cell8_impedance']['text'] +
-										"][#9|"   + BMS_STATUS['impedances']['cell9_impedance']['text'] + 
-										"][#10|"  + BMS_STATUS['impedances']['cell10_impedance']['text'] + 
-										"][#11|"  + BMS_STATUS['impedances']['cell11_impedance']['text'] +
-										"][#12|"  + BMS_STATUS['impedances']['cell12_impedance']['text'] +
-										"][#13|"  + BMS_STATUS['impedances']['cell13_impedance']['text'] +
-										"][#14|"  + BMS_STATUS['impedances']['cell14_impedance']['text'] +
-										"][#15|"  + BMS_STATUS['impedances']['cell15_impedance']['text'] +
-										"][#16|"  + BMS_STATUS['impedances']['cell16_impedance']['text'] + 
-										"][#17|"  + BMS_STATUS['impedances']['cell17_impedance']['text'] +
-										"][#18|"  + BMS_STATUS['impedances']['cell18_impedance']['text'] +
-										"][#19|"  + BMS_STATUS['impedances']['cell19_impedance']['text'] +
-										"][#20|"  + BMS_STATUS['impedances']['cell20_impedance']['text'] +
-										"][#21|"  + BMS_STATUS['impedances']['cell21_impedance']['text'] +
-										"][#22|"  + BMS_STATUS['impedances']['cell22_impedance']['text'] +
-										"][#23|"  + BMS_STATUS['impedances']['cell23_impedance']['text'] +
-										"][#24|"  + BMS_STATUS['impedances']['cell24_impedance']['text'] + "]")
+								logging.info("BMS impedances " +
+									"][MODE1|" + BMS_STATUS['impedances']['current_mode1']['text'] +
+									"][CURRENT1|" + BMS_STATUS['impedances']['current1']['text'] +
+									"][SUM|"  + BMS_STATUS['impedances']['agg_impedances']['sum']['text'] +
+									"][#1|"   + BMS_STATUS['impedances']['cell1_impedance']['text'] +
+									"][#2|"   + BMS_STATUS['impedances']['cell2_impedance']['text'] +
+									"][#3|"   + BMS_STATUS['impedances']['cell3_impedance']['text'] +
+									"][#4|"   + BMS_STATUS['impedances']['cell4_impedance']['text'] +
+									"][#5|"   + BMS_STATUS['impedances']['cell5_impedance']['text'] +
+									"][#6|"   + BMS_STATUS['impedances']['cell6_impedance']['text'] +
+									"][#7|"   + BMS_STATUS['impedances']['cell7_impedance']['text'] +
+									"][#8|"   + BMS_STATUS['impedances']['cell8_impedance']['text'] +
+									"][#9|"   + BMS_STATUS['impedances']['cell9_impedance']['text'] +
+									"][#10|"  + BMS_STATUS['impedances']['cell10_impedance']['text'] +
+									"][#11|"  + BMS_STATUS['impedances']['cell11_impedance']['text'] +
+									"][#12|"  + BMS_STATUS['impedances']['cell12_impedance']['text'] +
+									"][#13|"  + BMS_STATUS['impedances']['cell13_impedance']['text'] +
+									"][#14|"  + BMS_STATUS['impedances']['cell14_impedance']['text'] +
+									"][#15|"  + BMS_STATUS['impedances']['cell15_impedance']['text'] +
+									"][#16|"  + BMS_STATUS['impedances']['cell16_impedance']['text'] +
+									"][#17|"  + BMS_STATUS['impedances']['cell17_impedance']['text'] +
+									"][#18|"  + BMS_STATUS['impedances']['cell18_impedance']['text'] +
+									"][#19|"  + BMS_STATUS['impedances']['cell19_impedance']['text'] +
+									"][#20|"  + BMS_STATUS['impedances']['cell20_impedance']['text'] +
+									"][#21|"  + BMS_STATUS['impedances']['cell21_impedance']['text'] +
+									"][#22|"  + BMS_STATUS['impedances']['cell22_impedance']['text'] +
+									"][#23|"  + BMS_STATUS['impedances']['cell23_impedance']['text'] +
+									"][#24|"  + BMS_STATUS['impedances']['cell24_impedance']['text'] + "]")
 
 							else:
 								logging.debug("Packet Checksum wrong, skip packet")
