@@ -75,7 +75,7 @@ MbPage {
 
 
 		MbSubMenu {
-			description: qsTr("Cells Voltages")
+			description: qsTr("Cell Voltages")
 			subpage: Component {
 				PageBatteryChargeryBMSVoltages {
 					bindPrefix: service.path("")
@@ -84,7 +84,7 @@ MbPage {
 		}
 
 		MbSubMenu {
-			description: qsTr("Cells Impedances")
+			description: qsTr("Cell Impedances")
 			subpage: Component {
 				PageBatteryChargeryBMSImpedances {
 					bindPrefix: service.path("")

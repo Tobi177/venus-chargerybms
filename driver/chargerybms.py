@@ -881,7 +881,7 @@ def parse_packet(packet):
 
 
 								# print (BMS_STATUS)
-								logging.info("BMS status [SOC|" + BMS_STATUS['bms']['soc']['text'] +
+								logging.info("BMS Status [SOC|" + BMS_STATUS['bms']['soc']['text'] +
 									"][MODE|" + BMS_STATUS['bms']['current_mode']['text'] + 
 									"][CURRENT|" + BMS_STATUS['bms']['current']['text'] + 
 									"][T1|" + BMS_STATUS['bms']['temperature']['sensor_t1']['text'] + 
@@ -1242,7 +1242,7 @@ def parse_packet(packet):
 								# print (BMS_STATUS)
 								if (packet_length == PACKET_LENGTH_STATUS_CELLS[0]): # packet from BMS8
 								
-									logging.info("BMS8 cells " +
+									logging.info("BMS Voltages " +
 										"[CAPACITYAH|" + BMS_STATUS['voltages']['battery_capacity_ah']['text'] +
 										"][CAPACITYWH|" + BMS_STATUS['voltages']['battery_capacity_wh']['text'] +
 										"][DIFF|" + BMS_STATUS['voltages']['agg_voltages']['diff']['text'] +
@@ -1258,7 +1258,7 @@ def parse_packet(packet):
 
 								elif (packet_length == PACKET_LENGTH_STATUS_CELLS[1]): # packet from BMS16
 
-									logging.info("BMS16 cells " +
+									logging.info("BMS Voltages " +
 										"[CAPACITYAH|" + BMS_STATUS['voltages']['battery_capacity_ah']['text'] +
 										"][CAPACITYWH|" + BMS_STATUS['voltages']['battery_capacity_wh']['text'] +
 										"][DIFF|" + BMS_STATUS['voltages']['agg_voltages']['diff']['text'] +
@@ -1283,7 +1283,7 @@ def parse_packet(packet):
 
 								elif (packet_length == PACKET_LENGTH_STATUS_CELLS[2]): # packet from BMS24
 
-									logging.info("BMS24 cells " +
+									logging.info("BMS Voltages " +
 										"[CAPACITYAH|" + BMS_STATUS['voltages']['battery_capacity_ah']['text'] +
 										"][CAPACITYWH|" + BMS_STATUS['voltages']['battery_capacity_wh']['text'] +
 										"][DIFF|" + BMS_STATUS['voltages']['agg_voltages']['diff']['text'] +
@@ -1459,7 +1459,7 @@ def parse_packet(packet):
 									dbusservice["/Impedances/UpdateTimestamp"] = BMS_STATUS['impedances']['timestamp']['text']
 									dbusservice["/Raw/Impedances/UpdateTimestamp"] = BMS_STATUS['impedances']['timestamp']['value']
 
-								logging.info("BMS impedances " +
+								logging.info("BMS Impedances " +
 									"][MODE1|" + BMS_STATUS['impedances']['current_mode1']['text'] +
 									"][CURRENT1|" + BMS_STATUS['impedances']['current1']['text'] +
 									"][SUM|"  + BMS_STATUS['impedances']['agg_impedances']['sum']['text'] +

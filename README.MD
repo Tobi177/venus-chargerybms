@@ -8,7 +8,8 @@ This project embeds the Chargery BMS to a Victron Energy Venus OS device to moni
 
 ![Overview](https://raw.githubusercontent.com/Tobi177/venus-chargerybms/master/examples/overview.png)
 ![ChargeryBMS](https://raw.githubusercontent.com/Tobi177/venus-chargerybms/master/examples/chargerybms.png)
-![ChargeryBMS Cells](https://raw.githubusercontent.com/Tobi177/venus-chargerybms/master/examples/chargerybmscells.png)
+![ChargeryBMS Voltages](https://raw.githubusercontent.com/Tobi177/venus-chargerybms/master/examples/chargerybmsvoltages.png)
+![ChargeryBMS Impedances](https://raw.githubusercontent.com/Tobi177/venus-chargerybms/master/examples/chargerybmsimpedances.png)
 
 # Requirements
 
@@ -21,9 +22,6 @@ This project embeds the Chargery BMS to a Victron Energy Venus OS device to moni
  - TBD
 
 # Notes
-- Proof-of-Concept style
-- Only the Chargery BMS16T is currently supported. However the sources can very easily be changed to support BMS8T and BMS24T as well.
-- No multiple languages
 - No scripts to resetup the changes automatically on update of Venus OS
-- The devices are "hard-coded" at the qml files, must be adapted (VE.direct devices, etc) 
+- The devices are "hard-coded" at the overview qml file, must be adapted (VE.direct devices, etc) 
 

@@ -7,7 +7,7 @@ MbPage {
 
 	property string bindPrefix
 	property BatteryDetails details: BatteryDetails { bindPrefix: root.bindPrefix }
-	title: service.description + " | Cells Voltages"
+	title: service.description + " | Cell Voltages"
 
 	model: VisualItemModel {
 
