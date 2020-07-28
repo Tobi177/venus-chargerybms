@@ -15,7 +15,7 @@ MbPage {
 			id: currentState1
 			description: qsTr("Measured Current")
 			values: [
-				MbTextBlock { item { bind: service.path("/Impedances/CurrentMode1"); } width: 70; height: 25 },
+				MbTextBlock { item { bind: service.path("/Impedances/CurrentMode1"); } height: 25 },
 				MbTextBlock { item { bind: service.path("/Impedances/Current1"); } width: 70; height: 25 }
 			]
 		}
