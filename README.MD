@@ -21,6 +21,25 @@ This project embeds the Chargery BMS to a Victron Energy Venus OS device to moni
 # Installation
  - TBD
 
+# Command Line Parameters
+```
+usage: chargerybms.py [-h] [--version] [--debug] [--test] [--victron] -d
+                      DEVICE
+
+Chargery BMS driver
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --debug               enable debug logging
+  --test                test some stored examples network packets
+  --victron             enable Victron DBUS support for VenusOS
+
+required arguments:
+  -d DEVICE, --device DEVICE
+                        serial device for data (eg /dev/ttyUSB0)
+```
+
 # Notes
 - No scripts to resetup the changes automatically on update of Venus OS
 - The devices are "hard-coded" at the overview qml file, must be adapted (VE.direct devices, etc) 
