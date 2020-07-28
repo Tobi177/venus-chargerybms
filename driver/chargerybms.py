@@ -246,7 +246,7 @@ PACKET_LENGTH_STATUS_BMS         = [15]
 # Special handling here: the impedances packet length is dynamically
 # and depends on how many cells are monitored. The minimum length of
 # the network packet with headers, command, length, currentmode1, current1
-# and checksum is 8 bytes. On 6monitored cells the packet length will
+# and checksum is 8 bytes. On 6 monitored cells the packet length will
 # be 8+(2*6) = 20 bytes. Therefore, the smallest possible and valid
 # impedances network packet will be 10 bytes
 PACKET_LENGTH_STATUS_IMPEDANCES  = 10
