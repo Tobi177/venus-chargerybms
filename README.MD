@@ -14,9 +14,11 @@ This project embeds the Chargery BMS to a Victron Energy Venus OS device to moni
 # Requirements
 
  - Chargery BMS
- - Venus OS device
  - FTDI Adapter FT232RL USB TTL Serial (IMPORTANT: Must be flashed with FT_PROG software to invert tx mode)
- - ...
+
+# Optional
+
+ - Support for Victron Venus OS. Support is enabled with the "--victron" command line parameter
 
 # Installation
  - TBD
