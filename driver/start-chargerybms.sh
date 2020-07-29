@@ -9,5 +9,6 @@
 
 . /opt/victronenergy/serial-starter/run-service.sh
 
+ln -s /dev/$tty /dev/ttyCHGBMS01
 app="/usr/bin/python /opt/victronenergy/chargerybms/chargerybms.py"
 start -d /dev/$tty --victron

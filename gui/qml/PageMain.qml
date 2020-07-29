@@ -111,7 +111,7 @@ MbPage {
 			page = vebusPage
 			break;
 		case DBusService.DBUS_SERVICE_BATTERY:
-			if (service.name == "com.victronenergy.battery.ttyUSB0") {
+			if (service.name == "com.victronenergy.battery.ttyCHGBMS01") {
 				page = batteryPageChargeryBMS
 			} else {
 				page = batteryPage

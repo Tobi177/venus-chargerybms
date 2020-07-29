@@ -32,7 +32,7 @@ driver = {
 	'id'          : 0x01,
 	'version'     : 1.2,
 	'serial'      : "CHGBMS11062020A1",
-	'connection'  : "com.victronenergy.battery.ttyUSB0"
+	'connection'  : "com.victronenergy.battery.ttyCHGBMS01"
 }
 
 

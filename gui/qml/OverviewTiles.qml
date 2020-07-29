@@ -8,7 +8,7 @@ OverviewPage {
 
 	property string solarchargerPrefix: "com.victronenergy.solarcharger.ttyO2"
 	property string batteryPrefix: "com.victronenergy.battery.ttyO4"
-	property string chargeryBMSPrefix: "com.victronenergy.battery.ttyUSB0"
+	property string chargeryBMSPrefix: "com.victronenergy.battery.ttyCHGBMS01"
 
 	title: qsTr("System Overview")
 
