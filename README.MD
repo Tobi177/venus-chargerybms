@@ -21,8 +21,16 @@ and grabs the data form the RS232 USB interface every second. Example Images:
 
  - Support for Victron Venus OS. Support is enabled with the "--victron" command line parameter
 
-# Installation
- - TBD
+# Installation without Venus OS support
+ - No installation required. Just use the driver directory and execute the script with the serial device parameter
+
+# Installation Venus OS
+ - Enable root access on Venus OS [https://www.victronenergy.com/live/ccgx:root_access]
+ - Download the file /install/install.sh from this archive
+ - Use it at you rown risk!
+ - Execute the file, the latest versions of the the script and tvictron python library are downloaded
+ - Installation will be done (Remember we need a FT232RL USB adapter, check the requirements)
+ - Reboot
 
 # Command Line Parameters
 ```
