@@ -49,8 +49,7 @@ then
 	then
 		echo "Setup new overview"
 		cp venus-chargerybms-master/gui/qml/OverviewTiles.qml /opt/victronenergy/gui/qml
-	fi 
+	fi
 
 	echo "To finish, reboot the Venus OS device"
-	
 fi
