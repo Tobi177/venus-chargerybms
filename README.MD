@@ -26,7 +26,7 @@ and grabs the data form the RS232 USB interface every second. Example Images:
  - Download the file /install/install.sh from this archive
  - Use it at you rown risk!
  - Execute the file, the latest versions of the the script and victron python library are downloaded
- - Installation will be done (Remember we need a FT232RL USB adapter, check the requirements)
+ - Installation will be done (remember we need a FT232RL USB adapter, check the requirements)
  - Reboot your device
 
 # Command Line Parameters
@@ -49,6 +49,6 @@ required arguments:
 ```
 
 # Notes
-- No scripts to resetup the changes automatically on update of Venus OS
+- No scripts to resetup the changes automatically on update of Venus OS, run installation again
 - The devices are "hard-coded" at the overview qml file, must be adapted (VE.direct devices, etc) 
 
