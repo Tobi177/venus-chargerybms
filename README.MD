@@ -16,10 +16,7 @@ and grabs the data form the RS232 USB interface every second. Example Images:
 
  - Chargery BMS
  - FTDI Adapter FT232RL USB TTL Serial (IMPORTANT: Must be flashed with FT_PROG software to invert tx mode)
-
-# Optional
-
- - Support for Victron Venus OS. Support is enabled with the "--victron" command line parameter
+ - Optional: Support for Victron Venus OS. Support is enabled with the "--victron" command line parameter
 
 # Installation without Venus OS support
  - No installation required. Just use the driver directory and execute the script with the serial device parameter
@@ -28,9 +25,9 @@ and grabs the data form the RS232 USB interface every second. Example Images:
  - Enable root access on Venus OS [https://www.victronenergy.com/live/ccgx:root_access]
  - Download the file /install/install.sh from this archive
  - Use it at you rown risk!
- - Execute the file, the latest versions of the the script and tvictron python library are downloaded
+ - Execute the file, the latest versions of the the script and victron python library are downloaded
  - Installation will be done (Remember we need a FT232RL USB adapter, check the requirements)
- - Reboot
+ - Reboot your device
 
 # Command Line Parameters
 ```
