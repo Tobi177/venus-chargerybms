@@ -18,8 +18,8 @@ then
 	cp -R velib_python-master/* venus-chargerybms-master/ext/velib_python
 
 	echo "Add Chargery entries to serial-starter"
-	#sed -i  '/ACTION=="add", ENV{ID_BUS}=="usb", ENV{ID_MODEL}=="FT232R_USB_UART",            ENV{VE_SERVICE}="rs485:default:chargerybms"/a ' /etc/udev/rules.d/serial-starter.rules
-	#sed -i  '/service.*imt.*dbus-imt-si-rs485tc/a service chargerybms     chargerybms' /etc/venus/serial-starter.conf
+	sed -i  's/ENV{VE_SERVICE}="rs485:default"/ENV{VE_SERVICE}="rs485:default:chargerybms"/g' /etc/udev/rules.d/serial-starter.rules
+	sed -i  '/service.*imt.*dbus-imt-si-rs485tc/a service chargerybms     chargerybms' /etc/venus/serial-starter.conf
 
 	echo "Install Chargery driver"
 	mkdir -p /var/log/chargerybms
