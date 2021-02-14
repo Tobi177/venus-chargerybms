@@ -255,6 +255,11 @@ PACKET_LENGTH_STATUS_IMPEDANCES  = 10
 MIN_CELL_VOLTAGE   = 1.0
 MIN_CELL_IMPEDANCE = 0.0
 
+# Again special handling: Negative tempratures will result in
+# a buffer overflow we do handle this if temperature values
+# are retruened above 65000 which is about - 53,6 degree celsius
+MINUS_TEMPERATURE_OFFSET = 65000
+
 BMS_STATUS = {
 	'bms' : { 
 		'charged_end_voltage' : {
@@ -560,7 +565,7 @@ BMS_TEST_PACKETS = {
 	2 : bytearray.fromhex('2424570F0E240100E4008100845B25'),
 	3 : bytearray.fromhex('2424570F0E240100E1008300845B24'),
 	4 : bytearray.fromhex('2424562D0CFD0D040D040D020D030D040D060D010D080D020D050CFE0D060CFB0D0F0CFC76FED50263140E0095'),
-    5 : bytearray.fromhex('2424582801E4000100030003000300020003000000000001000100010000000500020003000300CC'),
+	5 : bytearray.fromhex('2424582801E4000100030003000300020003000000000001000100010000000500020003000300CC'),
 	6 : bytearray.fromhex('2424570F0E240100E4008300845B27'),
 	7 : bytearray.fromhex('24245814012a000900040007000b000b00070010')
 }
@@ -762,8 +767,10 @@ def get_current1_value(byte1, byte2):
 
 
 def get_temperature_value(byte1, byte2):
-	return float((float(byte1 * 256) + float(byte2)) / 10)
-	
+	if (((byte1 * 256) + byte2) >= MINUS_TEMPERATURE_OFFSET): # temperature below 0 degree celsius
+		return (-1) * float(((256 * 256) - (float(byte1 * 256) + float(byte2))) / 10)
+	else:
+		return float((float(byte1 * 256) + float(byte2)) / 10)
 	
 def get_battery_capacity(byte1, byte2, byte3, byte4):
 	return float((float(byte1) + float(byte2 * 256) + float(byte3 * 256 * 256) + float(byte4 * 256 * 256 * 256)) / 1000)
