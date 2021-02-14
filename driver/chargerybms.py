@@ -255,9 +255,9 @@ PACKET_LENGTH_STATUS_IMPEDANCES  = 10
 MIN_CELL_VOLTAGE   = 1.0
 MIN_CELL_IMPEDANCE = 0.0
 
-# Again special handling: Negative tempratures will result in
+# Again special handling: Negative temperatures will result in
 # a buffer overflow we do handle this if temperature values
-# are retruened above 65000 which is about - 53,6 degree celsius
+# are retruned above 65000 which is about - 53,6 degree celsius
 MINUS_TEMPERATURE_OFFSET = 65000
 
 BMS_STATUS = {
