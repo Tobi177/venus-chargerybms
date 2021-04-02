@@ -38,6 +38,14 @@ MbPage {
 		}
 
 		MbItemRow {
+			description: qsTr("Relays (Charge/Discharge)")
+			values: [
+				MbTextBlock { item { bind: service.path("/Info/ChargeRelayStatus"); }  width: 70; height: 25 },
+				MbTextBlock { item { bind: service.path("/Info/DischargeRelayStatus"); } width: 70; height: 25 }
+			]
+		}
+
+		MbItemRow {
 			description: qsTr("Temperature Sensors (1/2)")
 			values: [
 				MbTextBlock { item { bind: service.path("/Info/Temp/Sensor1"); } width: 70; height: 25 },

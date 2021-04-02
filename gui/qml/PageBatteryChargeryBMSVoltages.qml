@@ -39,9 +39,10 @@ MbPage {
 		}
 
 		MbItemRow {
-			description: qsTr("Charge End Voltage")
+			description: qsTr("End Voltages (Charge/Discharge)")
 			values: [
-				MbTextBlock { item { bind: service.path("/Info/ChargeEndVoltage"); } width: 70; height: 25 }
+				MbTextBlock { item { bind: service.path("/Info/ChargeEndVoltage"); } width: 70; height: 25 },
+				MbTextBlock { item { bind: service.path("/Info/DischargeEndVoltage"); } width: 70; height: 25 }
 			]
 		}
 
