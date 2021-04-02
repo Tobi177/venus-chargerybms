@@ -105,23 +105,23 @@ OverviewPage {
 
 			MbItemRowTOBO {
 				id: batterySoc
-				description: qsTr("Used | Soc | Time")
+				description: qsTr("Soc | Used | Time")
 				
 				values: [
-					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/ConsumedAmphours"); width: 90; height: 25 },
-					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/Soc"); item.unit: "%"; item.decimals: 1; width: 90; height: 25 },
-					MbTextBlock { item.text: remainingTime(batteryTimeToGo.value, 1); width: 90; height: 25 }
+					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/Soc"); item.unit: "%"; item.decimals: 0; width: 85; height: 25 },
+					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/ConsumedAmphours"); width: 85; height: 25 },
+					MbTextBlock { item.text: remainingTime(batteryTimeToGo.value); width: 85; height: 25 }
 				]
 			}
 
 			MbItemRowTOBO {
 				id: batteryLoad
 			 	anchors.top: batterySoc.bottom
-				description: qsTr("Battery Status")
+				description: qsTr("Battery (V/A/W)")
 				values: [
-					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/Dc/0/Voltage"); width: 90; height: 25 },
-					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/Dc/0/Current"); width: 90; height: 25 },
-					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/Dc/0/Power"); width: 90; height: 25 }
+					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/Dc/0/Voltage"); width: 85; height: 25 },
+					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/Dc/0/Current"); width: 85; height: 25 },
+					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/Dc/0/Power"); width: 85; height: 25 }
 				]
 			}
 		}
@@ -131,7 +131,7 @@ OverviewPage {
 			id: pvRectangle
 
 			width: 480
-			height: 105
+			height: 70
 			color: "#FF2D2D"
 
 			MbItemRowTOBO {
@@ -144,64 +144,63 @@ OverviewPage {
 				}
 
 				values: [
-					MbTextBlock { item.text: pvState.text; width: 90; height: 25 },
-					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/History/Daily/0/MaxPvVoltage"); item.decimals: 2; item.unit: "V"; width: 90; height: 25 },
-					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/History/Daily/0/MaxPower"); item.unit: "W"; width: 90; height: 25 }
+					MbTextBlock { item.text: pvState.text; width: 85; height: 25 },
+					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/History/Daily/0/MaxPvVoltage"); item.decimals: 2; item.unit: "V"; width: 85; height: 25 },
+					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/History/Daily/0/MaxPower"); item.unit: "W"; width: 85; height: 25 }
 				]
 			}
-
 			
 			MbItemRowTOBO {
 				id : pvDisplay
 			 	anchors.top: pvStateDisplay.bottom
-				description: qsTr("Solar Status")
+				description: qsTr("Solar (V/A/W)")
 
 				values: [
-					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/Pv/V"); width: 90; visible: true; height: 25 },
-					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/Pv/I"); width: 90; visible: true; height: 25 },
-					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/Yield/Power"); width: 90; height: 25 }
+					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/Pv/V"); width: 85; visible: true; height: 25 },
+					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/Pv/I"); width: 85; visible: true; height: 25 },
+					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/Yield/Power"); width: 85; height: 25 }
 				]
 			}
 
-			MbItemRowTOBO {
-				id : pvBattery
-			 	anchors.top: pvDisplay.bottom
-				description: qsTr("Battery Charge")
-				values: [
-					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/Dc/0/Voltage"); width: 90; height: 25 },
-					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/Dc/0/Current"); width: 90; height: 25 }
-				]
-			}
 		}
 
 		Rectangle {
 			id: bmsRectangle
 
 			width: 480
-			height: 75
+			height: 105
 			color: "#404040"
-
 
 			MbItemRowTOBO {
 				id : bmsCellView1
-				description: qsTr("Volt (Min/Max/Diff)")
+				description: qsTr("Relays (Charge/Discharge)")
 				values: [
-					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Min"); width: 90; height: 25 },
-					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Max"); width: 90; height: 25 },
-					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Diff"); width: 90; height: 25 }
+					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Info/ChargeRelayStatus"); width: 85; height: 25 },
+					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Info/DischargeRelayStatus"); width: 85; height: 25 }
 				]
 			}
 
 			MbItemRowTOBO {
 				id : bmsCellView2
 			 	anchors.top: bmsCellView1.bottom
-				description: qsTr("Current | Temp (1/2)")
+				description: qsTr("Cells (Min/Max/Diff)")
 				values: [
-					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Info/Current"); width: 90; height: 25 },
-					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Info/Temp/Sensor1"); width: 90; height: 25 },
-					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Info/Temp/Sensor2"); width: 90; height: 25 }
+					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Min"); width: 85; height: 25 },
+					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Max"); width: 85; height: 25 },
+					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Diff"); width: 85; height: 25 }
 				]
 			}
+			
+			MbItemRowTOBO {
+				id : bmsCellView3
+			 	anchors.top: bmsCellView2.bottom
+				description: qsTr("Voltage | Temp (1/2)")
+				values: [
+					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Sum"); width: 85; height: 25 },
+					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Info/Temp/Sensor1"); width: 85; height: 25 },
+					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Info/Temp/Sensor2"); width: 85; height: 25 }
+				]
+			}	
 
 		}
 
