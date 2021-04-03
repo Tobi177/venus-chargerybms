@@ -1033,7 +1033,7 @@ def parse_packet(packet):
 							if (checksum == checksum_check):
 
 
-								# cell voltages BMS8
+								# cell voltages BMS8/BMS16/BMS24
 								BMS_STATUS['voltages']['cell1_voltage']['value'] = get_voltage_value(ord(packet[4]), ord(packet[5]))
 								BMS_STATUS['voltages']['cell1_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell1_voltage']['value']) + "V"
 								if args.victron:
@@ -1082,7 +1082,7 @@ def parse_packet(packet):
 									dbusservice["/Voltages/Cell8"] = BMS_STATUS['voltages']['cell8_voltage']['text']
 									dbusservice["/Raw/Voltages/Cell8"] = BMS_STATUS['voltages']['cell8_voltage']['value']
 
-								if (packet_length == PACKET_LENGTH_STATUS_CELLS[1]): # packet from BMS16
+								if ((packet_length == PACKET_LENGTH_STATUS_CELLS[1]) or (packet_length == PACKET_LENGTH_STATUS_CELLS[2])): # packet from BMS16/BMS24
 
 									BMS_STATUS['voltages']['cell9_voltage']['value'] = get_voltage_value(ord(packet[20]), ord(packet[21]))
 									BMS_STATUS['voltages']['cell9_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell9_voltage']['value']) + "V"
