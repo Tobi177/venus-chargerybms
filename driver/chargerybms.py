@@ -1442,7 +1442,7 @@ def parse_packet(packet):
 								for i in range(1, cell_count+1):
 									BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['value'] = get_cell_impedance(ord(packet[7+(2*(i-1))]), ord(packet[8+(2*(i-1))]))
 									BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['value']) + "mOhm"
-									
+
 									if args.victron:
 										dbusservice["/Impedances/Cell"+str(i)] = BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell"+str(i)] = BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['value']
