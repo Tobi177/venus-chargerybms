@@ -108,7 +108,7 @@ OverviewPage {
 				description: qsTr("Soc | Used | Time")
 				
 				values: [
-					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/Soc"); item.unit: "%"; item.decimals: 0; width: 85; height: 25 },
+					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/Soc"); item.unit: "%"; item.decimals: 1; width: 85; height: 25 },
 					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/ConsumedAmphours"); width: 85; height: 25 },
 					MbTextBlock { item.text: remainingTime(batteryTimeToGo.value); width: 85; height: 25 }
 				]
@@ -197,8 +197,8 @@ OverviewPage {
 				description: qsTr("Voltage | Temp (1/2)")
 				values: [
 					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Sum"); width: 85; height: 25 },
-					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Info/Temp/Sensor1"); width: 85; height: 25 },
-					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Info/Temp/Sensor2"); width: 85; height: 25 }
+					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Raw/Info/Temp/Sensor1"); width: 85; height: 25; item.decimals: 1; item.unit: "°C" },
+					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Raw/Info/Temp/Sensor2"); width: 85; height: 25; item.decimals: 1; item.unit: "°C" }
 				]
 			}	
 

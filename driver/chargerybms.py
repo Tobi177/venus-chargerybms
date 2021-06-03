@@ -590,13 +590,6 @@ BMS_TEST_PACKETS = {
 }
 
 
-# define special unicode characters here
-SPECIAL_DISPLAY_SYMBOLS = {
-	'degree' : u'\u00b0',
-	'ohm'    : u'\u03A9'
-}
-
-
 def reset_status_values():
 
 	BMS_STATUS['bms']['charged_end_voltage']['value'] = -1
@@ -887,9 +880,9 @@ def parse_packet(packet):
 
 								# current temperatures
 								BMS_STATUS['bms']['temperature']['sensor_t1']['value'] = get_temperature_value(ord(packet[9]), ord(packet[10]))
-								BMS_STATUS['bms']['temperature']['sensor_t1']['text'] = str(BMS_STATUS['bms']['temperature']['sensor_t1']['value']) + SPECIAL_DISPLAY_SYMBOLS['degree'] + "C"
+								BMS_STATUS['bms']['temperature']['sensor_t1']['text'] = str(BMS_STATUS['bms']['temperature']['sensor_t1']['value']) + "C"
 								BMS_STATUS['bms']['temperature']['sensor_t2']['value'] = get_temperature_value(ord(packet[11]), ord(packet[12]))
-								BMS_STATUS['bms']['temperature']['sensor_t2']['text'] = str(BMS_STATUS['bms']['temperature']['sensor_t2']['value']) + SPECIAL_DISPLAY_SYMBOLS['degree'] + "C"
+								BMS_STATUS['bms']['temperature']['sensor_t2']['text'] = str(BMS_STATUS['bms']['temperature']['sensor_t2']['value']) + "C"
 
 								if args.victron:
 									dbusservice["/Info/Temp/Sensor1"] = BMS_STATUS['bms']['temperature']['sensor_t1']['text']
@@ -1448,7 +1441,8 @@ def parse_packet(packet):
 
 								for i in range(1, cell_count+1):
 									BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['value'] = get_cell_impedance(ord(packet[7+(2*(i-1))]), ord(packet[8+(2*(i-1))]))
-									BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
+									BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['value']) + "mOhm"
+									
 									if args.victron:
 										dbusservice["/Impedances/Cell"+str(i)] = BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['text']
 										dbusservice["/Raw/Impedances/Cell"+str(i)] = BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['value']
@@ -1508,13 +1502,13 @@ def parse_packet(packet):
 									cell_impedances.append(BMS_STATUS['impedances']['cell24_impedance']['value'])
 									
 								BMS_STATUS['impedances']['agg_impedances']['sum']['value']  = sum(cell_impedances)
-								BMS_STATUS['impedances']['agg_impedances']['sum']['text']   = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['sum']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm'] 
+								BMS_STATUS['impedances']['agg_impedances']['sum']['text']   = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['sum']['value']) + "mOhm" 
 								BMS_STATUS['impedances']['agg_impedances']['max']['value']  = max(cell_impedances)
-								BMS_STATUS['impedances']['agg_impedances']['max']['text']   = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['max']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm'] 
+								BMS_STATUS['impedances']['agg_impedances']['max']['text']   = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['max']['value']) + "mOhm" 
 								BMS_STATUS['impedances']['agg_impedances']['min']['value']  = min(cell_impedances)
-								BMS_STATUS['impedances']['agg_impedances']['min']['text']   = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['min']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm'] 
+								BMS_STATUS['impedances']['agg_impedances']['min']['text']   = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['min']['value']) + "mOhm" 
 								BMS_STATUS['impedances']['agg_impedances']['diff']['value'] = BMS_STATUS['impedances']['agg_impedances']['max']['value'] - BMS_STATUS['impedances']['agg_impedances']['min']['value']
-								BMS_STATUS['impedances']['agg_impedances']['diff']['text']  = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['diff']['value']) + "m" + SPECIAL_DISPLAY_SYMBOLS['ohm']
+								BMS_STATUS['impedances']['agg_impedances']['diff']['text']  = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['diff']['value']) + "mOhm"
 
 								if args.victron:
 									dbusservice["/Impedances/Sum"]      = BMS_STATUS['impedances']['agg_impedances']['sum']['text']

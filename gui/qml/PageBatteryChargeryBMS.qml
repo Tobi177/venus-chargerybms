@@ -48,8 +48,8 @@ MbPage {
 		MbItemRow {
 			description: qsTr("Temperature Sensors (1/2)")
 			values: [
-				MbTextBlock { item { bind: service.path("/Info/Temp/Sensor1"); } width: 70; height: 25 },
-				MbTextBlock { item { bind: service.path("/Info/Temp/Sensor2"); } width: 70; height: 25 }
+				MbTextBlock { item { bind: service.path("/Raw/Info/Temp/Sensor1"); } width: 70; height: 25; item.decimals: 1; item.unit: "°C" },
+				MbTextBlock { item { bind: service.path("/Raw/Info/Temp/Sensor2"); } width: 70; height: 25; item.decimals: 1; item.unit: "°C" }
 			]
 		}
 
@@ -67,9 +67,9 @@ MbPage {
 		MbItemRow {
 			description: qsTr("Impedances (Min/Max/Sum)")
 			values: [
-				MbTextBlock { item { bind: service.path("/Impedances/Min"); } width: 70; height: 25 },
-				MbTextBlock { item { bind: service.path("/Impedances/Max"); } width: 70; height: 25 },
-				MbTextBlock { item { bind: service.path("/Impedances/Sum"); } width: 70; height: 25 }
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Min"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" },
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Max"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" },
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Sum"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" }
 			]
 		}
 

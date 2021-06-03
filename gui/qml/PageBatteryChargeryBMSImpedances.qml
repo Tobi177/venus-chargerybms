@@ -23,27 +23,27 @@ MbPage {
 		MbItemRow {
 			description: qsTr("Impedances (Min/Max/Sum)")
 			values: [
-				MbTextBlock { item { bind: service.path("/Impedances/Min"); } width: 70; height: 25 },
-				MbTextBlock { item { bind: service.path("/Impedances/Max"); } width: 70; height: 25 },
-				MbTextBlock { item { bind: service.path("/Impedances/Sum"); } width: 70; height: 25 }
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Min"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" },
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Max"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" },
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Sum"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" }
 			]
 		}
 
 		MbItemRow {
 			description: qsTr("Cells (1/2/3)")
 			values: [
-				MbTextBlock { item { bind: service.path("/Impedances/Cell1"); } width: 70; height: 25 },
-				MbTextBlock { item { bind: service.path("/Impedances/Cell2"); } width: 70; height: 25 },
-				MbTextBlock { item { bind: service.path("/Impedances/Cell3"); } width: 70; height: 25 }
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Cell1"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" },
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Cell2"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" },
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Cell3"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" }
 			]
 		}
 
 		MbItemRow {
 			description: qsTr("Cells (4/5/6)")
 			values: [
-				MbTextBlock { item { bind: service.path("/Impedances/Cell4"); } width: 70; height: 25 },
-				MbTextBlock { item { bind: service.path("/Impedances/Cell5"); } width: 70; height: 25 },
-				MbTextBlock { item { bind: service.path("/Impedances/Cell6"); } width: 70; height: 25 }
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Cell4"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" },
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Cell5"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" },
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Cell6"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" }
 			]
 		}
 
