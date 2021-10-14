@@ -32,7 +32,8 @@ then
 	chmod +x /opt/victronenergy/chargerybms/service/run
 	chmod +x /opt/victronenergy/chargerybms/service/log/run
 
-	ln -s /opt/victronenergy/chargerybms/service /service/chargerybms
+	ln -s /opt/victronenergy/chargerybms/service /opt/victronenergy/service/chargerybms
+	ln -s /opt/victronenergy/chargerybms/service /opt/victronenergy/service-templates/chargerybms
 
 	echo "Copy gui files"
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
-import gobject
+from gi.repository import GLib as gobject
 import platform
 import argparse
 import logging
@@ -577,18 +577,6 @@ BMS_STATUS = {
 	}
 }
 
-# example network packets form the chargery community protocol manual v1.25
-BMS_TEST_PACKETS = {
-	1 : bytearray.fromhex('2424570F0E240100E6008100845B27'),
-	2 : bytearray.fromhex('2424570F0E240100E4008100845B25'),
-	3 : bytearray.fromhex('2424570F0E240100E1008300845B24'),
-	4 : bytearray.fromhex('2424562D0CFD0D040D040D020D030D040D060D010D080D020D050CFE0D060CFB0D0F0CFC76FED50263140E0095'),
-	5 : bytearray.fromhex('2424582801E4000100030003000300020003000000000001000100010000000500020003000300CC'),
-	6 : bytearray.fromhex('2424570F0E240100E4008300845B27'),
-	7 : bytearray.fromhex('24245814012a000900040007000b000b00070010'),
-	8 : bytearray.fromhex('2424570F0E240100E4008300845B27683A3A330D0A')
-}
-
 
 def reset_status_values():
 
@@ -753,8 +741,8 @@ def debug_packet(packet):
 
 	string_output = ""
 	for packet_byte in packet:
-		byte_string = str(ord(packet_byte)) + " [" + packet_byte.encode("hex") + "] "
-	 	string_output = string_output + byte_string
+		byte_string = str(packet_byte) + " [" + hex(packet_byte) + "] "
+		string_output = string_output + byte_string
 	logging.debug(string_output);
 
 
@@ -765,7 +753,7 @@ def get_header_position(packet):
 	pos_iterator = -1
 	for packet_byte in packet:
 		pos_iterator += 1
-		if ((ord(previous_packet_byte) == PACKET_HEADER) and (ord(packet_byte) == PACKET_HEADER)):
+		if ((previous_packet_byte == PACKET_HEADER) and (packet_byte == PACKET_HEADER)):
 			break
 		previous_packet_byte = packet_byte
 
@@ -815,12 +803,12 @@ def parse_packet(packet):
 			packet = packet[(header_position - 1):]
 			
 			if (len(packet) >= 4): 
-				if ((ord(packet[0]) == PACKET_HEADER) and (ord(packet[1]) == PACKET_HEADER)):
-					packet_length = ord(packet[3])
+				if ((packet[0] == PACKET_HEADER) and (packet[1] == PACKET_HEADER)):
+					packet_length = packet[3]
 					logging.debug("Packet Length [" + str (packet_length) + " bytes]")
 					debug_packet(packet)
 		
-					if (ord(packet[2]) == PACKET_STATUS_BMS):
+					if (packet[2] == PACKET_STATUS_BMS):
 					
 						if (len(packet) < PACKET_LENGTH_STATUS_BMS[0]):
 							logging.debug("Packet Status BMS too short, skip")
@@ -830,12 +818,12 @@ def parse_packet(packet):
 							reset_status_values()
 
 							# checksum value
-							checksum = ord(packet[packet_length-1])
+							checksum = packet[packet_length-1]
 							checksum_check = 0
 
 							# calculate checksum
 							for i in range(packet_length-1):
-								checksum_check = checksum_check + ord(packet[i])
+								checksum_check = checksum_check + packet[i]
 							checksum_check = checksum_check % 256
 							logging.debug("Packet Checksum : " + str(checksum) + "|" + str(checksum_check))
 							
@@ -843,17 +831,17 @@ def parse_packet(packet):
 							if (checksum == checksum_check):
 
 								# charge end voltage
-								BMS_STATUS['bms']['charged_end_voltage']['value'] = get_voltage_value(ord(packet[4]), ord(packet[5]))
+								BMS_STATUS['bms']['charged_end_voltage']['value'] = get_voltage_value(packet[4], packet[5])
 								BMS_STATUS['bms']['charged_end_voltage']['text'] = "{:.2f}".format(BMS_STATUS['bms']['charged_end_voltage']['value']) + "V"
 								if args.victron:
 									dbusservice["/Info/ChargeEndVoltage"] = BMS_STATUS['bms']['charged_end_voltage']['text']
 									dbusservice["/Raw/Info/ChargeEndVoltage"] = BMS_STATUS['bms']['charged_end_voltage']['value']
 
 								# actual current
-								BMS_STATUS['bms']['current']['value'] = get_current_value(ord(packet[7]), ord(packet[8]))
+								BMS_STATUS['bms']['current']['value'] = get_current_value(packet[7], packet[8])
 
 								# charge mode
-								bms_current_mode = ord(packet[6])
+								bms_current_mode = packet[6]
 								if (bms_current_mode == 0x00):
 									BMS_STATUS['bms']['current_mode']['value'] = 0
 									BMS_STATUS['bms']['current_mode']['text']  = "Discharge"
@@ -879,9 +867,9 @@ def parse_packet(packet):
 									dbusservice["/Raw/Info/Current"]     = BMS_STATUS['bms']['current']['value']
 
 								# current temperatures
-								BMS_STATUS['bms']['temperature']['sensor_t1']['value'] = get_temperature_value(ord(packet[9]), ord(packet[10]))
+								BMS_STATUS['bms']['temperature']['sensor_t1']['value'] = get_temperature_value(packet[9], packet[10])
 								BMS_STATUS['bms']['temperature']['sensor_t1']['text'] = str(BMS_STATUS['bms']['temperature']['sensor_t1']['value']) + "C"
-								BMS_STATUS['bms']['temperature']['sensor_t2']['value'] = get_temperature_value(ord(packet[11]), ord(packet[12]))
+								BMS_STATUS['bms']['temperature']['sensor_t2']['value'] = get_temperature_value(packet[11], packet[12])
 								BMS_STATUS['bms']['temperature']['sensor_t2']['text'] = str(BMS_STATUS['bms']['temperature']['sensor_t2']['value']) + "C"
 
 								if args.victron:
@@ -891,21 +879,21 @@ def parse_packet(packet):
 									dbusservice["/Raw/Info/Temp/Sensor2"] = BMS_STATUS['bms']['temperature']['sensor_t2']['value']
 
 								# soc value
-								BMS_STATUS['bms']['soc']['value'] = ord(packet[13])
-								BMS_STATUS['bms']['soc']['text'] = str(ord(packet[13])) + "%"
+								BMS_STATUS['bms']['soc']['value'] = packet[13]
+								BMS_STATUS['bms']['soc']['text'] = str(packet[13]) + "%"
 								if args.victron:
 									dbusservice["/Info/Soc"] = BMS_STATUS['bms']['soc']['text']
 									dbusservice["/Raw/Info/Soc"] = BMS_STATUS['bms']['soc']['value']
 
 								# discharge end voltage
-								BMS_STATUS['bms']['discharged_end_voltage']['value'] = get_voltage_value(ord(packet[14]), ord(packet[15]))
+								BMS_STATUS['bms']['discharged_end_voltage']['value'] = get_voltage_value(packet[14], packet[15])
 								BMS_STATUS['bms']['discharged_end_voltage']['text'] = "{:.2f}".format(BMS_STATUS['bms']['discharged_end_voltage']['value']) + "V"
 								if args.victron:
 									dbusservice["/Info/DischargeEndVoltage"] = BMS_STATUS['bms']['discharged_end_voltage']['text']
 									dbusservice["/Raw/Info/DischargeEndVoltage"] = BMS_STATUS['bms']['discharged_end_voltage']['value']
 
 								# charge relay status
-								bms_charge_relay_status = ord(packet[16])
+								bms_charge_relay_status = packet[16]
 								if (bms_charge_relay_status == 0x00):
 									BMS_STATUS['bms']['charge_relay_status']['value'] = 0
 									BMS_STATUS['bms']['charge_relay_status']['text']  = "On"
@@ -922,7 +910,7 @@ def parse_packet(packet):
 
 
 								# discharge relay status
-								bms_discharge_relay_status = ord(packet[17])
+								bms_discharge_relay_status = packet[17]
 								if (bms_discharge_relay_status == 0x00):
 									BMS_STATUS['bms']['discharge_relay_status']['value'] = 0
 									BMS_STATUS['bms']['discharge_relay_status']['text']  = "On"
@@ -963,7 +951,7 @@ def parse_packet(packet):
 							# strip packet
 							packet = packet[packet_length:]
 			
-					elif (ord(packet[2]) == PACKET_STATUS_CELLS):
+					elif (packet[2] == PACKET_STATUS_CELLS):
 
 						if (len(packet) < PACKET_LENGTH_STATUS_CELLS[0]):
 							logging.debug("Packet Status Cells too short, skip")
@@ -983,11 +971,11 @@ def parse_packet(packet):
 									logging.debug("Packet Status Cells too short, skip")
 									packet = ""
 								else:
-									checksum = ord(packet[packet_length-1])
+									checksum = packet[packet_length-1]
 
 									# calculate checksum
 									for i in range(packet_length-1):
-										checksum_check = checksum_check + ord(packet[i])
+										checksum_check = checksum_check + packet[i]
 									checksum_check = checksum_check % 256
 									logging.debug("Packet Checksum BMS8: " + str(checksum) + "|" + str(checksum_check))
 
@@ -998,11 +986,11 @@ def parse_packet(packet):
 									logging.debug("Packet Status Cells too short, skip")
 									packet = ""
 								else:
-									checksum = ord(packet[packet_length-1])
+									checksum = packet[packet_length-1]
 
 									# calculate checksum
 									for i in range(packet_length-1):
-										checksum_check = checksum_check + ord(packet[i])
+										checksum_check = checksum_check + packet[i]
 									checksum_check = checksum_check % 256
 									logging.debug("Packet Checksum BMS16: " + str(checksum) + "|" + str(checksum_check))
 							
@@ -1013,11 +1001,11 @@ def parse_packet(packet):
 									logging.debug("Packet Status Cells too short, skip")
 									packet = ""
 								else:
-									checksum = ord(packet[packet_length-1])
+									checksum = packet[packet_length-1]
 
 									# calculate checksum
 									for i in range(packet_length-1):
-										checksum_check = checksum_check + ord(packet[i])
+										checksum_check = checksum_check + packet[i]
 									checksum_check = checksum_check % 256
 									logging.debug("Packet Checksum BMS24: " + str(checksum) + "|" + str(checksum_check))
 
@@ -1025,51 +1013,50 @@ def parse_packet(packet):
 							# data integrity does match
 							if (checksum == checksum_check):
 
-
 								# cell voltages BMS8/BMS16/BMS24
-								BMS_STATUS['voltages']['cell1_voltage']['value'] = get_voltage_value(ord(packet[4]), ord(packet[5]))
+								BMS_STATUS['voltages']['cell1_voltage']['value'] = get_voltage_value(packet[4], packet[5])
 								BMS_STATUS['voltages']['cell1_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell1_voltage']['value']) + "V"
 								if args.victron:
 									dbusservice["/Voltages/Cell1"] = BMS_STATUS['voltages']['cell1_voltage']['text']
 									dbusservice["/Raw/Voltages/Cell1"] = BMS_STATUS['voltages']['cell1_voltage']['value']
 
-								BMS_STATUS['voltages']['cell2_voltage']['value'] = get_voltage_value(ord(packet[6]), ord(packet[7]))
+								BMS_STATUS['voltages']['cell2_voltage']['value'] = get_voltage_value(packet[6], packet[7])
 								BMS_STATUS['voltages']['cell2_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell2_voltage']['value']) + "V"
 								if args.victron:
 									dbusservice["/Voltages/Cell2"] = BMS_STATUS['voltages']['cell2_voltage']['text']
 									dbusservice["/Raw/Voltages/Cell2"] = BMS_STATUS['voltages']['cell2_voltage']['value']
 
-								BMS_STATUS['voltages']['cell3_voltage']['value'] = get_voltage_value(ord(packet[8]), ord(packet[9]))
+								BMS_STATUS['voltages']['cell3_voltage']['value'] = get_voltage_value(packet[8], packet[9])
 								BMS_STATUS['voltages']['cell3_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell3_voltage']['value']) + "V"
 								if args.victron:
 									dbusservice["/Voltages/Cell3"] = BMS_STATUS['voltages']['cell3_voltage']['text']
 									dbusservice["/Raw/Voltages/Cell3"] = BMS_STATUS['voltages']['cell3_voltage']['value']
 
-								BMS_STATUS['voltages']['cell4_voltage']['value'] = get_voltage_value(ord(packet[10]), ord(packet[11]))
+								BMS_STATUS['voltages']['cell4_voltage']['value'] = get_voltage_value(packet[10], packet[11])
 								BMS_STATUS['voltages']['cell4_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell4_voltage']['value']) + "V"
 								if args.victron:
 									dbusservice["/Voltages/Cell4"] = BMS_STATUS['voltages']['cell4_voltage']['text']
 									dbusservice["/Raw/Voltages/Cell4"] = BMS_STATUS['voltages']['cell4_voltage']['value']
 
-								BMS_STATUS['voltages']['cell5_voltage']['value'] = get_voltage_value(ord(packet[12]), ord(packet[13]))
+								BMS_STATUS['voltages']['cell5_voltage']['value'] = get_voltage_value(packet[12], packet[13])
 								BMS_STATUS['voltages']['cell5_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell5_voltage']['value']) + "V"
 								if args.victron:
 									dbusservice["/Voltages/Cell5"] = BMS_STATUS['voltages']['cell5_voltage']['text']
 									dbusservice["/Raw/Voltages/Cell5"] = BMS_STATUS['voltages']['cell5_voltage']['value']
 
-								BMS_STATUS['voltages']['cell6_voltage']['value'] = get_voltage_value(ord(packet[14]), ord(packet[15]))
+								BMS_STATUS['voltages']['cell6_voltage']['value'] = get_voltage_value(packet[14], packet[15])
 								BMS_STATUS['voltages']['cell6_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell6_voltage']['value']) + "V"
 								if args.victron:
 									dbusservice["/Voltages/Cell6"] = BMS_STATUS['voltages']['cell6_voltage']['text']
 									dbusservice["/Raw/Voltages/Cell6"] = BMS_STATUS['voltages']['cell6_voltage']['value']
 
-								BMS_STATUS['voltages']['cell7_voltage']['value'] = get_voltage_value(ord(packet[16]), ord(packet[17]))
+								BMS_STATUS['voltages']['cell7_voltage']['value'] = get_voltage_value(packet[16], packet[17])
 								BMS_STATUS['voltages']['cell7_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell7_voltage']['value']) + "V"
 								if args.victron:
 									dbusservice["/Voltages/Cell7"] = BMS_STATUS['voltages']['cell7_voltage']['text']
 									dbusservice["/Raw/Voltages/Cell7"] = BMS_STATUS['voltages']['cell7_voltage']['value']
 
-								BMS_STATUS['voltages']['cell8_voltage']['value'] = get_voltage_value(ord(packet[18]), ord(packet[19]))
+								BMS_STATUS['voltages']['cell8_voltage']['value'] = get_voltage_value(packet[18], packet[19])
 								BMS_STATUS['voltages']['cell8_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell8_voltage']['value']) + "V"
 								if args.victron:
 									dbusservice["/Voltages/Cell8"] = BMS_STATUS['voltages']['cell8_voltage']['text']
@@ -1077,49 +1064,49 @@ def parse_packet(packet):
 
 								if ((packet_length == PACKET_LENGTH_STATUS_CELLS[1]) or (packet_length == PACKET_LENGTH_STATUS_CELLS[2])): # packet from BMS16/BMS24
 
-									BMS_STATUS['voltages']['cell9_voltage']['value'] = get_voltage_value(ord(packet[20]), ord(packet[21]))
+									BMS_STATUS['voltages']['cell9_voltage']['value'] = get_voltage_value(packet[20], packet[21])
 									BMS_STATUS['voltages']['cell9_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell9_voltage']['value']) + "V"
 									if args.victron:
 										dbusservice["/Voltages/Cell9"] = BMS_STATUS['voltages']['cell9_voltage']['text']
 										dbusservice["/Raw/Voltages/Cell9"] = BMS_STATUS['voltages']['cell9_voltage']['value']
 
-									BMS_STATUS['voltages']['cell10_voltage']['value'] = get_voltage_value(ord(packet[22]), ord(packet[23]))
+									BMS_STATUS['voltages']['cell10_voltage']['value'] = get_voltage_value(packet[22], packet[23])
 									BMS_STATUS['voltages']['cell10_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell10_voltage']['value']) + "V"
 									if args.victron:
 										dbusservice["/Voltages/Cell10"] = BMS_STATUS['voltages']['cell10_voltage']['text']
 										dbusservice["/Raw/Voltages/Cell10"] = BMS_STATUS['voltages']['cell10_voltage']['value']
 
-									BMS_STATUS['voltages']['cell11_voltage']['value'] = get_voltage_value(ord(packet[24]), ord(packet[25]))
+									BMS_STATUS['voltages']['cell11_voltage']['value'] = get_voltage_value(packet[24], packet[25])
 									BMS_STATUS['voltages']['cell11_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell11_voltage']['value']) + "V"
 									if args.victron:
 										dbusservice["/Voltages/Cell11"] = BMS_STATUS['voltages']['cell11_voltage']['text']
 										dbusservice["/Raw/Voltages/Cell11"] = BMS_STATUS['voltages']['cell11_voltage']['value']
 
-									BMS_STATUS['voltages']['cell12_voltage']['value'] = get_voltage_value(ord(packet[26]), ord(packet[27]))
+									BMS_STATUS['voltages']['cell12_voltage']['value'] = get_voltage_value(packet[26], packet[27])
 									BMS_STATUS['voltages']['cell12_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell12_voltage']['value']) + "V"
 									if args.victron:
 										dbusservice["/Voltages/Cell12"] = BMS_STATUS['voltages']['cell12_voltage']['text']
 										dbusservice["/Raw/Voltages/Cell12"] = BMS_STATUS['voltages']['cell12_voltage']['value']
 
-									BMS_STATUS['voltages']['cell13_voltage']['value'] = get_voltage_value(ord(packet[28]), ord(packet[29]))
+									BMS_STATUS['voltages']['cell13_voltage']['value'] = get_voltage_value(packet[28], packet[29])
 									BMS_STATUS['voltages']['cell13_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell13_voltage']['value']) + "V"
 									if args.victron:
 										dbusservice["/Voltages/Cell13"] = BMS_STATUS['voltages']['cell13_voltage']['text']
 										dbusservice["/Raw/Voltages/Cell13"] = BMS_STATUS['voltages']['cell13_voltage']['value']
 
-									BMS_STATUS['voltages']['cell14_voltage']['value'] = get_voltage_value(ord(packet[30]), ord(packet[31]))
+									BMS_STATUS['voltages']['cell14_voltage']['value'] = get_voltage_value(packet[30], packet[31])
 									BMS_STATUS['voltages']['cell14_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell14_voltage']['value']) + "V"
 									if args.victron:
 										dbusservice["/Voltages/Cell14"] = BMS_STATUS['voltages']['cell14_voltage']['text']
 										dbusservice["/Raw/Voltages/Cell14"] = BMS_STATUS['voltages']['cell14_voltage']['value']
 
-									BMS_STATUS['voltages']['cell15_voltage']['value'] = get_voltage_value(ord(packet[32]), ord(packet[33]))
+									BMS_STATUS['voltages']['cell15_voltage']['value'] = get_voltage_value(packet[32], packet[33])
 									BMS_STATUS['voltages']['cell15_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell15_voltage']['value']) + "V"
 									if args.victron:
 										dbusservice["/Voltages/Cell15"] = BMS_STATUS['voltages']['cell15_voltage']['text']
 										dbusservice["/Raw/Voltages/Cell15"] = BMS_STATUS['voltages']['cell15_voltage']['value']
 
-									BMS_STATUS['voltages']['cell16_voltage']['value'] = get_voltage_value(ord(packet[34]), ord(packet[35]))
+									BMS_STATUS['voltages']['cell16_voltage']['value'] = get_voltage_value(packet[34], packet[35])
 									BMS_STATUS['voltages']['cell16_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell16_voltage']['value']) + "V"
 									if args.victron:
 										dbusservice["/Voltages/Cell16"] = BMS_STATUS['voltages']['cell16_voltage']['text']
@@ -1128,49 +1115,49 @@ def parse_packet(packet):
 
 								if (packet_length == PACKET_LENGTH_STATUS_CELLS[2]): # packet from BMS24
 
-									BMS_STATUS['voltages']['cell17_voltage']['value'] = get_voltage_value(ord(packet[36]), ord(packet[37]))
+									BMS_STATUS['voltages']['cell17_voltage']['value'] = get_voltage_value(packet[36], packet[37])
 									BMS_STATUS['voltages']['cell17_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell17_voltage']['value']) + "V"
 									if args.victron:
 										dbusservice["/Voltages/Cell17"] = BMS_STATUS['voltages']['cell17_voltage']['text']
 										dbusservice["/Raw/Voltages/Cell17"] = BMS_STATUS['voltages']['cell17_voltage']['value']
 
-									BMS_STATUS['voltages']['cell18_voltage']['value'] = get_voltage_value(ord(packet[38]), ord(packet[39]))
+									BMS_STATUS['voltages']['cell18_voltage']['value'] = get_voltage_value(packet[38], packet[39])
 									BMS_STATUS['voltages']['cell18_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell18_voltage']['value']) + "V"
 									if args.victron:
 										dbusservice["/Voltages/Cell18"] = BMS_STATUS['voltages']['cell18_voltage']['text']
 										dbusservice["/Raw/Voltages/Cell18"] = BMS_STATUS['voltages']['cell18_voltage']['value']
 
-									BMS_STATUS['voltages']['cell19_voltage']['value'] = get_voltage_value(ord(packet[40]), ord(packet[41]))
+									BMS_STATUS['voltages']['cell19_voltage']['value'] = get_voltage_value(packet[40], packet[41])
 									BMS_STATUS['voltages']['cell19_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell19_voltage']['value']) + "V"
 									if args.victron:
 										dbusservice["/Voltages/Cell19"] = BMS_STATUS['voltages']['cell19_voltage']['text']
 										dbusservice["/Raw/Voltages/Cell19"] = BMS_STATUS['voltages']['cell19_voltage']['value']
 
-									BMS_STATUS['voltages']['cell20_voltage']['value'] = get_voltage_value(ord(packet[42]), ord(packet[43]))
+									BMS_STATUS['voltages']['cell20_voltage']['value'] = get_voltage_value(packet[42], packet[43])
 									BMS_STATUS['voltages']['cell20_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell20_voltage']['value']) + "V"
 									if args.victron:
 										dbusservice["/Voltages/Cell20"] = BMS_STATUS['voltages']['cell20_voltage']['text']
 										dbusservice["/Raw/Voltages/Cell20"] = BMS_STATUS['voltages']['cell20_voltage']['value']
 
-									BMS_STATUS['voltages']['cell21_voltage']['value'] = get_voltage_value(ord(packet[44]), ord(packet[45]))
+									BMS_STATUS['voltages']['cell21_voltage']['value'] = get_voltage_value(packet[44], packet[45])
 									BMS_STATUS['voltages']['cell21_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell21_voltage']['value']) + "V"
 									if args.victron:
 										dbusservice["/Voltages/Cell21"] = BMS_STATUS['voltages']['cell21_voltage']['text']
 										dbusservice["/Raw/Voltages/Cell21"] = BMS_STATUS['voltages']['cell21_voltage']['value']
 
-									BMS_STATUS['voltages']['cell22_voltage']['value'] = get_voltage_value(ord(packet[46]), ord(packet[47]))
+									BMS_STATUS['voltages']['cell22_voltage']['value'] = get_voltage_value(packet[46], packet[47])
 									BMS_STATUS['voltages']['cell22_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell22_voltage']['value']) + "V"
 									if args.victron:
 										dbusservice["/Voltages/Cell22"] = BMS_STATUS['voltages']['cell22_voltage']['text']
 										dbusservice["/Raw/Voltages/Cell22"] = BMS_STATUS['voltages']['cell22_voltage']['value']
 
-									BMS_STATUS['voltages']['cell23_voltage']['value'] = get_voltage_value(ord(packet[48]), ord(packet[49]))
+									BMS_STATUS['voltages']['cell23_voltage']['value'] = get_voltage_value(packet[48], packet[49])
 									BMS_STATUS['voltages']['cell23_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell23_voltage']['value']) + "V"
 									if args.victron:
 										dbusservice["/Voltages/Cell23"] = BMS_STATUS['voltages']['cell23_voltage']['text']
 										dbusservice["/Raw/Voltages/Cell23"] = BMS_STATUS['voltages']['cell23_voltage']['value']
 
-									BMS_STATUS['voltages']['cell24_voltage']['value'] = get_voltage_value(ord(packet[50]), ord(packet[51]))
+									BMS_STATUS['voltages']['cell24_voltage']['value'] = get_voltage_value(packet[50], packet[51])
 									BMS_STATUS['voltages']['cell24_voltage']['text'] = "{:.3f}".format(BMS_STATUS['voltages']['cell24_voltage']['value']) + "V"
 									if args.victron:
 										dbusservice["/Voltages/Cell24"] = BMS_STATUS['voltages']['cell24_voltage']['text']
@@ -1253,13 +1240,13 @@ def parse_packet(packet):
 								if (packet_length == PACKET_LENGTH_STATUS_CELLS[0]): # packet from BMS8
 
 									# get battery capacity
-									BMS_STATUS['voltages']['battery_capacity_wh']['value'] = get_battery_capacity(ord(packet[20]), ord(packet[21]), ord(packet[22]), ord(packet[23]))
+									BMS_STATUS['voltages']['battery_capacity_wh']['value'] = get_battery_capacity(packet[20], packet[21], packet[22], packet[23])
 									BMS_STATUS['voltages']['battery_capacity_wh']['text'] = "{:.0f}".format(BMS_STATUS['voltages']['battery_capacity_wh']['value']) + "Wh"
 									if args.victron:
 										dbusservice["/Voltages/BatteryCapacityWH"] = BMS_STATUS['voltages']['battery_capacity_wh']['text']
 										dbusservice["/Raw/Voltages/BatteryCapacityWH"] = BMS_STATUS['voltages']['battery_capacity_wh']['value']
 
-									BMS_STATUS['voltages']['battery_capacity_ah']['value'] = get_battery_capacity(ord(packet[24]), ord(packet[25]), ord(packet[26]), ord(packet[27]))
+									BMS_STATUS['voltages']['battery_capacity_ah']['value'] = get_battery_capacity(packet[24], packet[25], packet[26], packet[27])
 									BMS_STATUS['voltages']['battery_capacity_ah']['text'] = "{:.0f}".format(BMS_STATUS['voltages']['battery_capacity_ah']['value']) + "Ah"
 									if args.victron:
 										dbusservice["/Voltages/BatteryCapacityAH"] = BMS_STATUS['voltages']['battery_capacity_ah']['text']
@@ -1269,13 +1256,13 @@ def parse_packet(packet):
 								elif (packet_length == PACKET_LENGTH_STATUS_CELLS[1]): # packet from BMS16
 
 									# get battery capacity
-									BMS_STATUS['voltages']['battery_capacity_wh']['value'] = get_battery_capacity(ord(packet[36]), ord(packet[37]), ord(packet[38]), ord(packet[39]))
+									BMS_STATUS['voltages']['battery_capacity_wh']['value'] = get_battery_capacity(packet[36], packet[37], packet[38], packet[39])
 									BMS_STATUS['voltages']['battery_capacity_wh']['text'] = "{:.0f}".format(BMS_STATUS['voltages']['battery_capacity_wh']['value']) + "Wh"
 									if args.victron:
 										dbusservice["/Voltages/BatteryCapacityWH"] = BMS_STATUS['voltages']['battery_capacity_wh']['text']
 										dbusservice["/Raw/Voltages/BatteryCapacityWH"] = BMS_STATUS['voltages']['battery_capacity_wh']['value']
 
-									BMS_STATUS['voltages']['battery_capacity_ah']['value'] = get_battery_capacity(ord(packet[40]), ord(packet[41]), ord(packet[42]), ord(packet[43]))
+									BMS_STATUS['voltages']['battery_capacity_ah']['value'] = get_battery_capacity(packet[40], packet[41], packet[42], packet[43])
 									BMS_STATUS['voltages']['battery_capacity_ah']['text'] = "{:.0f}".format(BMS_STATUS['voltages']['battery_capacity_ah']['value']) + "Ah"
 									if args.victron:
 										dbusservice["/Voltages/BatteryCapacityAH"] = BMS_STATUS['voltages']['battery_capacity_ah']['text']
@@ -1285,13 +1272,13 @@ def parse_packet(packet):
 								elif (packet_length == PACKET_LENGTH_STATUS_CELLS[2]): # packet from BMS24
 
 									# get battery capacity
-									BMS_STATUS['voltages']['battery_capacity_wh']['value'] = get_battery_capacity(ord(packet[52]), ord(packet[53]), ord(packet[54]), ord(packet[55]))
+									BMS_STATUS['voltages']['battery_capacity_wh']['value'] = get_battery_capacity(packet[52], packet[53], packet[54], packet[55])
 									BMS_STATUS['voltages']['battery_capacity_wh']['text'] = "{:.0f}".format(BMS_STATUS['voltages']['battery_capacity_wh']['value']) + "Wh"
 									if args.victron:									
 										dbusservice["/Voltages/BatteryCapacityWH"] = BMS_STATUS['voltages']['battery_capacity_wh']['text']
 										dbusservice["/Raw/Voltages/BatteryCapacityWH"] = BMS_STATUS['voltages']['battery_capacity_wh']['value']
 
-									BMS_STATUS['voltages']['battery_capacity_ah']['value'] = get_battery_capacity(ord(packet[56]), ord(packet[57]), ord(packet[58]), ord(packet[59]))
+									BMS_STATUS['voltages']['battery_capacity_ah']['value'] = get_battery_capacity(packet[56], packet[57], packet[58], packet[59])
 									BMS_STATUS['voltages']['battery_capacity_ah']['text'] = "{:.0f}".format(BMS_STATUS['voltages']['battery_capacity_ah']['value']) + "Ah"
 									if args.victron:
 										dbusservice["/Voltages/BatteryCapacityAH"] = BMS_STATUS['voltages']['battery_capacity_ah']['text']
@@ -1388,7 +1375,7 @@ def parse_packet(packet):
 							# strip packet
 							packet = packet[packet_length:]
 
-					elif (ord(packet[2]) == PACKET_STATUS_IMPEDANCES):
+					elif (packet[2] == PACKET_STATUS_IMPEDANCES):
 
 						if (len(packet) < PACKET_LENGTH_STATUS_IMPEDANCES):
 							logging.debug("Packet Impedances Cells too short, skip")
@@ -1401,12 +1388,12 @@ def parse_packet(packet):
 							logging.debug("Packet Impedances, detected cells: #" + str(cell_count))
 
 							# checksum value
-							checksum = ord(packet[packet_length-1])
+							checksum = packet[packet_length-1]
 							checksum_check = 0
 
 							# calculate checksum
 							for i in range(packet_length-1):
-								checksum_check = checksum_check + ord(packet[i])
+								checksum_check = checksum_check + packet[i]
 							checksum_check = checksum_check % 256
 							logging.debug("Packet Checksum BMS: " + str(checksum) + "|" + str(checksum_check))
 
@@ -1416,11 +1403,11 @@ def parse_packet(packet):
 
 								# Chargery protocol manual:
 								# Current 1 (A), It is instant current when measure cell impedance								
-								BMS_STATUS['impedances']['current1']['value'] = get_current1_value(ord(packet[5]), ord(packet[6]))
+								BMS_STATUS['impedances']['current1']['value'] = get_current1_value(packet[5], packet[6])
 
 								# Chargery protocol manual:
 								# Current mode 1 means battery is in charging or discharging when cell impedance is measured
-								bms_current_mode1 = ord(packet[4])
+								bms_current_mode1 = packet[4]
 								if (bms_current_mode1 == 0x00):
 									BMS_STATUS['impedances']['current_mode1']['value'] = 0
 									BMS_STATUS['impedances']['current_mode1']['text']  = "Discharge"
@@ -1440,7 +1427,7 @@ def parse_packet(packet):
 									dbusservice["/Raw/Impedances/Current1"] = BMS_STATUS['impedances']['current1']['value']
 
 								for i in range(1, cell_count+1):
-									BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['value'] = get_cell_impedance(ord(packet[7+(2*(i-1))]), ord(packet[8+(2*(i-1))]))
+									BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['value'] = get_cell_impedance(packet[7+(2*(i-1))], packet[8+(2*(i-1))])
 									BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['text'] = "{:.1f}".format(BMS_STATUS['impedances']['cell'+str(i)+'_impedance']['value']) + "mOhm"
 
 									if args.victron:
@@ -1578,26 +1565,24 @@ def parse_packet(packet):
 
 
 
-def handle_serial_data(test_packet = ''):
+def handle_serial_data():
 	try:
-		
-		if (len(test_packet) > 0): # for testing the example packets form the chargery manual
-			parse_packet(test_packet)
-		else:
-			serial_packet = ""
-			if (serial_port.in_waiting > 0):
-				logging.debug("Data Waiting [" + str(serial_port.in_waiting) + " bytes]")
-			if (serial_port.in_waiting >= (PACKET_LENGTH_MINIMUM * 2)):
-				data_buffer_array = serial_port.read(serial_port.in_waiting)
-				logging.debug("Data Received [" + str(len(data_buffer_array)) + " bytes]")
-				for data_buffer in data_buffer_array:
-					serial_packet += data_buffer
+		serial_packet = bytearray()
+
+		if (serial_port.in_waiting > 0):
+			logging.debug("Data Waiting [" + str(serial_port.in_waiting) + " bytes]")
+
+		if (serial_port.in_waiting >= (PACKET_LENGTH_MINIMUM * 2)):
+			data_buffer_array = serial_port.read(serial_port.in_waiting)
+			logging.debug("Data Received [" + str(len(data_buffer_array)) + " bytes]")
+			for data_buffer in data_buffer_array:
+				serial_packet.append(data_buffer)
 				
-				if (len(serial_packet) > 0):
-					parse_packet(serial_packet)			
+			if (len(serial_packet) > 0):
+				parse_packet(serial_packet)
 				
-				data_buffer_array = ""
-				serial_packet = ""
+			data_buffer_array = bytearray()
+			serial_packet = bytearray()
 
 		if args.victron:	
 			# recheck every second
@@ -1608,25 +1593,11 @@ def handle_serial_data(test_packet = ''):
 			raise
 
 
-if args.test:
-	for item in BMS_TEST_PACKETS.items():
-		handle_serial_data(str(item[1]));
-
-	# if we registered in testing to dbus, wait until the script is exitted with keyboard interruption
-	if args.victron:  
-		logging.info("Waiting for keyboard interruption...")
-		while True:
-			time.sleep(1)
-	
-	
-
+if args.victron:
+	gobject.timeout_add(1000, handle_serial_data)
+	mainloop = gobject.MainLoop()
+	mainloop.run()
 else:
-	if args.victron:
-		gobject.timeout_add(1000, handle_serial_data)
-		mainloop = gobject.MainLoop()
-		mainloop.run()
-	else:
-		while True:
-			handle_serial_data()
-			time.sleep(1)
-
+	while True:
+		handle_serial_data()
+		time.sleep(1)

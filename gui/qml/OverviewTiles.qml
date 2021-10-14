@@ -9,6 +9,8 @@ OverviewPage {
 	property string solarchargerPrefix: "com.victronenergy.solarcharger.ttyO2"
 	property string batteryPrefix: "com.victronenergy.battery.ttyO4"
 	property string chargeryBMSPrefix: "com.victronenergy.battery.ttyCHGBMS01"
+	property VBusItem totalPower: VBusItem { bind: Utils.path(solarchargerPrefix, "/Yield/Power") }
+	property VBusItem voltage: VBusItem { bind: Utils.path(solarchargerPrefix, "/Pv/V") }
 
 	title: qsTr("System Overview")
 
@@ -45,6 +47,13 @@ OverviewPage {
 
 		return Math.floor(minutes / 60) + ":" + Utils.pad(minutes % 60, 2)
 	}
+
+	function get_current()
+	{
+		if (!voltage.value || !totalPower.valid)
+			return undefined
+		return totalPower.value / voltage.value
+	}	
 
 
 	Column {
@@ -157,7 +166,7 @@ OverviewPage {
 
 				values: [
 					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/Pv/V"); width: 85; visible: true; height: 25 },
-					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/Pv/I"); width: 85; visible: true; height: 25 },
+					MbTextBlock { item.value: get_current(); item.decimals: 1; item.unit: "A"; width: 85; visible: true; height: 25 },
 					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/Yield/Power"); width: 85; height: 25 }
 				]
 			}
