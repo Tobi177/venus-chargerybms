@@ -1385,7 +1385,7 @@ def parse_packet(packet):
 							# delete old data
 							reset_impedances_values()
 
-							cell_count = (packet_length - 8) / 2;
+							cell_count = int((packet_length - 8) / 2);
 							logging.debug("Packet Impedances, detected cells: #" + str(cell_count))
 
 							# checksum value
@@ -1592,6 +1592,8 @@ def handle_serial_data():
 	except KeyboardInterrupt:
 		if not args.victron:
 			raise
+	except:
+		raise
 
 
 if args.victron:
