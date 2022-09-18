@@ -31,7 +31,7 @@ driver = {
 	'servicename' : "chargerybms",
 	'instance'    : 1,
 	'id'          : 0x01,
-	'version'     : 1.3,
+	'version'     : 1.4,
 	'serial'      : "CHGBMS11062020A1",
 	'connection'  : "com.victronenergy.battery.ttyCHGBMS01"
 }
@@ -130,6 +130,7 @@ if args.victron:
 	dbusservice.add_path('/Voltages/Diff',                 -1)
 	dbusservice.add_path('/Voltages/Max',                  -1)
 	dbusservice.add_path('/Voltages/Min',                  -1)
+	dbusservice.add_path('/Voltages/Avg',                  -1)
 	dbusservice.add_path('/Voltages/BatteryCapacityWH',    -1)
 	dbusservice.add_path('/Voltages/BatteryCapacityAH',    -1)
 	dbusservice.add_path('/Voltages/UpdateTimestamp',      -1)
@@ -163,6 +164,7 @@ if args.victron:
 	dbusservice.add_path('/Impedances/Diff',               -1)
 	dbusservice.add_path('/Impedances/Max',                -1)
 	dbusservice.add_path('/Impedances/Min',                -1)
+	dbusservice.add_path('/Impedances/Avg',                -1)
 	dbusservice.add_path('/Impedances/UpdateTimestamp',    -1)
 
 
@@ -205,6 +207,7 @@ if args.victron:
 	dbusservice.add_path('/Raw/Voltages/Diff',                 -1)
 	dbusservice.add_path('/Raw/Voltages/Max',                  -1)
 	dbusservice.add_path('/Raw/Voltages/Min',                  -1)
+	dbusservice.add_path('/Raw/Voltages/Avg',                  -1)
 	dbusservice.add_path('/Raw/Voltages/BatteryCapacityWH',    -1)
 	dbusservice.add_path('/Raw/Voltages/BatteryCapacityAH',    -1)
 	dbusservice.add_path('/Raw/Voltages/UpdateTimestamp',      -1)
@@ -238,6 +241,7 @@ if args.victron:
 	dbusservice.add_path('/Raw/Impedances/Diff',               -1)
 	dbusservice.add_path('/Raw/Impedances/Max',                -1)
 	dbusservice.add_path('/Raw/Impedances/Min',                -1)
+	dbusservice.add_path('/Raw/Impedances/Avg',                -1)
 	dbusservice.add_path('/Raw/Impedances/UpdateTimestamp',    -1)
 
 
@@ -425,6 +429,10 @@ BMS_STATUS = {
 			'diff' : {
 				'value' : -1,
 				'text'  : ""
+			},
+			'average' : {
+				'value' : -1,
+				'text'  : ""
 			}
 		},
 		'battery_capacity_wh' : {
@@ -561,6 +569,10 @@ BMS_STATUS = {
 			'diff' : {
 				'value' : -1,
 				'text'  : ""
+			},
+			'average' : {
+				'value' : -1,
+				'text'  : ""
 			}
 		},
 		'battery_capacity_wh' : {
@@ -657,14 +669,16 @@ def reset_impedances_values():
 	BMS_STATUS['impedances']['cell23_impedance']['text']  = ""
 	BMS_STATUS['impedances']['cell24_impedance']['value'] = -1
 	BMS_STATUS['impedances']['cell24_impedance']['text']  = ""
-	BMS_STATUS['impedances']['agg_impedances']['sum']['value'] = -1
-	BMS_STATUS['impedances']['agg_impedances']['sum']['text']  = ""
-	BMS_STATUS['impedances']['agg_impedances']['max']['value'] = -1
-	BMS_STATUS['impedances']['agg_impedances']['max']['text']  = ""
-	BMS_STATUS['impedances']['agg_impedances']['min']['value'] = -1
-	BMS_STATUS['impedances']['agg_impedances']['min']['text']  = ""
-	BMS_STATUS['impedances']['agg_impedances']['diff']['value'] = -1
-	BMS_STATUS['impedances']['agg_impedances']['diff']['text']  = ""
+	BMS_STATUS['impedances']['agg_impedances']['sum']['value']     = -1
+	BMS_STATUS['impedances']['agg_impedances']['sum']['text']      = ""
+	BMS_STATUS['impedances']['agg_impedances']['max']['value']     = -1
+	BMS_STATUS['impedances']['agg_impedances']['max']['text']      = ""
+	BMS_STATUS['impedances']['agg_impedances']['min']['value']     = -1
+	BMS_STATUS['impedances']['agg_impedances']['min']['text']      = ""
+	BMS_STATUS['impedances']['agg_impedances']['diff']['value']    = -1
+	BMS_STATUS['impedances']['agg_impedances']['diff']['text']     = ""
+	BMS_STATUS['impedances']['agg_impedances']['average']['value'] = -1
+	BMS_STATUS['impedances']['agg_impedances']['average']['text']  = ""
 	BMS_STATUS['impedances']['battery_capacity_wh']['value'] = -1
 	BMS_STATUS['impedances']['battery_capacity_wh']['text']  = ""
 	BMS_STATUS['impedances']['battery_capacity_ah']['value'] = -1
@@ -722,14 +736,16 @@ def reset_voltages_values():
 	BMS_STATUS['voltages']['cell23_voltage']['text']  = ""
 	BMS_STATUS['voltages']['cell24_voltage']['value'] = -1
 	BMS_STATUS['voltages']['cell24_voltage']['text']  = ""
-	BMS_STATUS['voltages']['agg_voltages']['sum']['value'] = -1
-	BMS_STATUS['voltages']['agg_voltages']['sum']['text']  = ""
-	BMS_STATUS['voltages']['agg_voltages']['max']['value'] = -1
-	BMS_STATUS['voltages']['agg_voltages']['max']['text']  = ""
-	BMS_STATUS['voltages']['agg_voltages']['min']['value'] = -1
-	BMS_STATUS['voltages']['agg_voltages']['min']['text']  = ""
-	BMS_STATUS['voltages']['agg_voltages']['diff']['value'] = -1
-	BMS_STATUS['voltages']['agg_voltages']['diff']['text']  = ""
+	BMS_STATUS['voltages']['agg_voltages']['sum']['value']     = -1
+	BMS_STATUS['voltages']['agg_voltages']['sum']['text']      = ""
+	BMS_STATUS['voltages']['agg_voltages']['max']['value']     = -1
+	BMS_STATUS['voltages']['agg_voltages']['max']['text']      = ""
+	BMS_STATUS['voltages']['agg_voltages']['min']['value']     = -1
+	BMS_STATUS['voltages']['agg_voltages']['min']['text']      = ""
+	BMS_STATUS['voltages']['agg_voltages']['diff']['value']    = -1
+	BMS_STATUS['voltages']['agg_voltages']['diff']['text']     = ""
+	BMS_STATUS['voltages']['agg_voltages']['average']['value'] = -1
+	BMS_STATUS['voltages']['agg_voltages']['average']['text']  = ""
 	BMS_STATUS['voltages']['battery_capacity_wh']['value'] = -1
 	BMS_STATUS['voltages']['battery_capacity_wh']['text']  = ""
 	BMS_STATUS['voltages']['battery_capacity_ah']['value'] = -1
@@ -1218,14 +1234,16 @@ def parse_packet(packet):
 								if (BMS_STATUS['voltages']['cell24_voltage']['value'] >= MIN_CELL_VOLTAGE):
 									cell_voltages.append(BMS_STATUS['voltages']['cell24_voltage']['value'])
 									
-								BMS_STATUS['voltages']['agg_voltages']['sum']['value']  = sum(cell_voltages)
-								BMS_STATUS['voltages']['agg_voltages']['sum']['text']   = "{:.2f}".format(BMS_STATUS['voltages']['agg_voltages']['sum']['value']) + "V" 
-								BMS_STATUS['voltages']['agg_voltages']['max']['value']  = max(cell_voltages)
-								BMS_STATUS['voltages']['agg_voltages']['max']['text']   = "{:.3f}".format(BMS_STATUS['voltages']['agg_voltages']['max']['value']) + "V" 
-								BMS_STATUS['voltages']['agg_voltages']['min']['value']  = min(cell_voltages)
-								BMS_STATUS['voltages']['agg_voltages']['min']['text']   = "{:.3f}".format(BMS_STATUS['voltages']['agg_voltages']['min']['value']) + "V" 
-								BMS_STATUS['voltages']['agg_voltages']['diff']['value'] = BMS_STATUS['voltages']['agg_voltages']['max']['value'] - BMS_STATUS['voltages']['agg_voltages']['min']['value']
-								BMS_STATUS['voltages']['agg_voltages']['diff']['text']  = "{:.0f}".format(BMS_STATUS['voltages']['agg_voltages']['diff']['value'] * 1000) + "mV"
+								BMS_STATUS['voltages']['agg_voltages']['sum']['value']      = sum(cell_voltages)
+								BMS_STATUS['voltages']['agg_voltages']['sum']['text']       = "{:.2f}".format(BMS_STATUS['voltages']['agg_voltages']['sum']['value']) + "V" 
+								BMS_STATUS['voltages']['agg_voltages']['max']['value']      = max(cell_voltages)
+								BMS_STATUS['voltages']['agg_voltages']['max']['text']       = "{:.3f}".format(BMS_STATUS['voltages']['agg_voltages']['max']['value']) + "V" 
+								BMS_STATUS['voltages']['agg_voltages']['min']['value']      = min(cell_voltages)
+								BMS_STATUS['voltages']['agg_voltages']['min']['text']       = "{:.3f}".format(BMS_STATUS['voltages']['agg_voltages']['min']['value']) + "V" 
+								BMS_STATUS['voltages']['agg_voltages']['diff']['value']     = BMS_STATUS['voltages']['agg_voltages']['max']['value'] - BMS_STATUS['voltages']['agg_voltages']['min']['value']
+								BMS_STATUS['voltages']['agg_voltages']['diff']['text']      = "{:.0f}".format(BMS_STATUS['voltages']['agg_voltages']['diff']['value'] * 1000) + "mV"
+								BMS_STATUS['voltages']['agg_voltages']['average']['value']  = float("{:.3f}".format(sum(cell_voltages)/len(cell_voltages)))
+								BMS_STATUS['voltages']['agg_voltages']['average']['text']   = "{:.3f}".format(BMS_STATUS['voltages']['agg_voltages']['average']['value']) + "V" 
 
 								if args.victron:
 									dbusservice["/Voltages/Sum"]      = BMS_STATUS['voltages']['agg_voltages']['sum']['text']
@@ -1236,6 +1254,8 @@ def parse_packet(packet):
 									dbusservice["/Raw/Voltages/Min"]  = BMS_STATUS['voltages']['agg_voltages']['min']['value']
 									dbusservice["/Voltages/Diff"]     = BMS_STATUS['voltages']['agg_voltages']['diff']['text']
 									dbusservice["/Raw/Voltages/Diff"] = BMS_STATUS['voltages']['agg_voltages']['diff']['value']
+									dbusservice["/Voltages/Avg"]      = BMS_STATUS['voltages']['agg_voltages']['average']['text']
+									dbusservice["/Raw/Voltages/Avg"]  = BMS_STATUS['voltages']['agg_voltages']['average']['value']
 
 
 								if (packet_length == PACKET_LENGTH_STATUS_CELLS[0]): # packet from BMS8
@@ -1489,14 +1509,16 @@ def parse_packet(packet):
 								if (BMS_STATUS['impedances']['cell24_impedance']['value'] >= MIN_CELL_IMPEDANCE):
 									cell_impedances.append(BMS_STATUS['impedances']['cell24_impedance']['value'])
 									
-								BMS_STATUS['impedances']['agg_impedances']['sum']['value']  = sum(cell_impedances)
-								BMS_STATUS['impedances']['agg_impedances']['sum']['text']   = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['sum']['value']) + "mOhm" 
-								BMS_STATUS['impedances']['agg_impedances']['max']['value']  = max(cell_impedances)
-								BMS_STATUS['impedances']['agg_impedances']['max']['text']   = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['max']['value']) + "mOhm" 
-								BMS_STATUS['impedances']['agg_impedances']['min']['value']  = min(cell_impedances)
-								BMS_STATUS['impedances']['agg_impedances']['min']['text']   = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['min']['value']) + "mOhm" 
-								BMS_STATUS['impedances']['agg_impedances']['diff']['value'] = BMS_STATUS['impedances']['agg_impedances']['max']['value'] - BMS_STATUS['impedances']['agg_impedances']['min']['value']
-								BMS_STATUS['impedances']['agg_impedances']['diff']['text']  = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['diff']['value']) + "mOhm"
+								BMS_STATUS['impedances']['agg_impedances']['sum']['value']      = sum(cell_impedances)
+								BMS_STATUS['impedances']['agg_impedances']['sum']['text']       = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['sum']['value']) + "mOhm" 
+								BMS_STATUS['impedances']['agg_impedances']['max']['value']      = max(cell_impedances)
+								BMS_STATUS['impedances']['agg_impedances']['max']['text']       = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['max']['value']) + "mOhm" 
+								BMS_STATUS['impedances']['agg_impedances']['min']['value']      = min(cell_impedances)
+								BMS_STATUS['impedances']['agg_impedances']['min']['text']       = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['min']['value']) + "mOhm" 
+								BMS_STATUS['impedances']['agg_impedances']['diff']['value']     = BMS_STATUS['impedances']['agg_impedances']['max']['value'] - BMS_STATUS['impedances']['agg_impedances']['min']['value']
+								BMS_STATUS['impedances']['agg_impedances']['diff']['text']      = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['diff']['value']) + "mOhm"
+								BMS_STATUS['impedances']['agg_impedances']['average']['value']  = float("{:.3f}".format(sum(cell_impedances)/len(cell_impedances))) 
+								BMS_STATUS['impedances']['agg_impedances']['average']['text']   = "{:.1f}".format(BMS_STATUS['impedances']['agg_impedances']['average']['value']) + "mOhm" 
 
 								if args.victron:
 									dbusservice["/Impedances/Sum"]      = BMS_STATUS['impedances']['agg_impedances']['sum']['text']
@@ -1507,6 +1529,8 @@ def parse_packet(packet):
 									dbusservice["/Raw/Impedances/Min"]  = BMS_STATUS['impedances']['agg_impedances']['min']['value']
 									dbusservice["/Impedances/Diff"]     = BMS_STATUS['impedances']['agg_impedances']['diff']['text']
 									dbusservice["/Raw/Impedances/Diff"] = BMS_STATUS['impedances']['agg_impedances']['diff']['value']
+									dbusservice["/Impedances/Avg"]      = BMS_STATUS['impedances']['agg_impedances']['average']['text']
+									dbusservice["/Raw/Impedances/Avg"]  = BMS_STATUS['impedances']['agg_impedances']['average']['value']
 
 
 								# update timestamp

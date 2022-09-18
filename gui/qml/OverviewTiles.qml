@@ -140,7 +140,7 @@ OverviewPage {
 			id: pvRectangle
 
 			width: 480
-			height: 70
+			height: 105
 			color: "#FF2D2D"
 
 			MbItemRowTOBO {
@@ -171,27 +171,29 @@ OverviewPage {
 				]
 			}
 
+			MbItemRowTOBO {
+				id : pvYield
+			 	anchors.top: pvDisplay.bottom
+				description: qsTr("Yield (Tod/D-1/D-2)")
+
+				values: [
+					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/History/Daily/0/Yield"); width: 85; visible: true; height: 25 },
+					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/History/Daily/1/Yield"); width: 85; height: 25 },
+					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/History/Daily/2/Yield"); width: 85; height: 25 }
+				]
+			}
+
 		}
 
 		Rectangle {
 			id: bmsRectangle
 
 			width: 480
-			height: 105
+			height: 70
 			color: "#404040"
 
 			MbItemRowTOBO {
 				id : bmsCellView1
-				description: qsTr("Relays (Charge/Discharge)")
-				values: [
-					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Info/ChargeRelayStatus"); width: 85; height: 25 },
-					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Info/DischargeRelayStatus"); width: 85; height: 25 }
-				]
-			}
-
-			MbItemRowTOBO {
-				id : bmsCellView2
-			 	anchors.top: bmsCellView1.bottom
 				description: qsTr("Cells (Min/Max/Diff)")
 				values: [
 					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Min"); width: 85; height: 25 },
@@ -201,8 +203,8 @@ OverviewPage {
 			}
 			
 			MbItemRowTOBO {
-				id : bmsCellView3
-			 	anchors.top: bmsCellView2.bottom
+				id : bmsCellView2
+			 	anchors.top: bmsCellView1.bottom
 				description: qsTr("Voltage | Temp (1/2)")
 				values: [
 					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Sum"); width: 85; height: 25 },

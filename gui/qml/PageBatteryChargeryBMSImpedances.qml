@@ -21,10 +21,11 @@ MbPage {
 		}
 
 		MbItemRow {
-			description: qsTr("Impedances (Min/Max/Sum)")
+			description: qsTr("Min/Max/Avg/Sum")
 			values: [
 				MbTextBlock { item { bind: service.path("/Raw/Impedances/Min"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" },
 				MbTextBlock { item { bind: service.path("/Raw/Impedances/Max"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" },
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Avg"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" },
 				MbTextBlock { item { bind: service.path("/Raw/Impedances/Sum"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" }
 			]
 		}
@@ -46,6 +47,25 @@ MbPage {
 				MbTextBlock { item { bind: service.path("/Raw/Impedances/Cell6"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" }
 			]
 		}
+
+		MbItemRow {
+			description: qsTr("Cells (7/8/9)")
+			values: [
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Cell7"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" },
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Cell8"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" },
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Cell9"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" }
+			]
+		}
+
+		MbItemRow {
+			description: qsTr("Cells (10/11/12)")
+			values: [
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Cell10"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" },
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Cell11"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" },
+				MbTextBlock { item { bind: service.path("/Raw/Impedances/Cell12"); } width: 70; height: 25; item.decimals: 1; item.unit: "mΩ" }
+			]
+		}
+
 
 		MbItemRow {
 			description: qsTr("Data Timestamp")

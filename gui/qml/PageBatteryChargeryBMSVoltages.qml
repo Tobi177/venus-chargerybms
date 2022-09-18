@@ -12,10 +12,11 @@ MbPage {
 	model: VisualItemModel {
 
 		MbItemRow {
-			description: qsTr("Voltages (Min/Max/Diff)")
+			description: qsTr("Min/Max/Avg/Diff")
 			values: [
 				MbTextBlock { item { bind: service.path("/Voltages/Min"); } width: 70; height: 25 },
 				MbTextBlock { item { bind: service.path("/Voltages/Max"); } width: 70; height: 25 },
+				MbTextBlock { item { bind: service.path("/Voltages/Avg"); } width: 70; height: 25 },
 				MbTextBlock { item { bind: service.path("/Voltages/Diff"); } width: 70; height: 25 }
 			]
 		}
@@ -39,10 +40,20 @@ MbPage {
 		}
 
 		MbItemRow {
-			description: qsTr("End Voltages (Charge/Discharge)")
+			description: qsTr("Cells (7/8/9)")
 			values: [
-				MbTextBlock { item { bind: service.path("/Info/ChargeEndVoltage"); } width: 70; height: 25 },
-				MbTextBlock { item { bind: service.path("/Info/DischargeEndVoltage"); } width: 70; height: 25 }
+				MbTextBlock { item { bind: service.path("/Voltages/Cell7"); } width: 70; height: 25 },
+				MbTextBlock { item { bind: service.path("/Voltages/Cell8"); } width: 70; height: 25 },
+				MbTextBlock { item { bind: service.path("/Voltages/Cell9"); } width: 70; height: 25 }
+			]
+		}
+
+		MbItemRow {
+			description: qsTr("Cells (10/11/12)")
+			values: [
+				MbTextBlock { item { bind: service.path("/Voltages/Cell10"); } width: 70; height: 25 },
+				MbTextBlock { item { bind: service.path("/Voltages/Cell11"); } width: 70; height: 25 },
+				MbTextBlock { item { bind: service.path("/Voltages/Cell12"); } width: 70; height: 25 }
 			]
 		}
 
@@ -50,6 +61,14 @@ MbPage {
 			description: qsTr("Data Timestamp")
 			values: [
 				MbTextBlock { item { bind: service.path("/Voltages/UpdateTimestamp"); } width: 215; height: 25 }
+			]
+		}
+
+		MbItemRow {
+			description: qsTr("End Voltages (Charge/Discharge)")
+			values: [
+				MbTextBlock { item { bind: service.path("/Info/ChargeEndVoltage"); } width: 70; height: 25 },
+				MbTextBlock { item { bind: service.path("/Info/DischargeEndVoltage"); } width: 70; height: 25 }
 			]
 		}
 
