@@ -9,8 +9,19 @@ OverviewPage {
 	property string solarchargerPrefix: "com.victronenergy.solarcharger.ttyO2"
 	property string batteryPrefix: "com.victronenergy.battery.ttyO4"
 	property string chargeryBMSPrefix: "com.victronenergy.battery.ttyCHGBMS01"
+	property string inverterPrefix: "com.victronenergy.vebus.ttyO5"
 	property VBusItem totalPower: VBusItem { bind: Utils.path(solarchargerPrefix, "/Yield/Power") }
 	property VBusItem voltage: VBusItem { bind: Utils.path(solarchargerPrefix, "/Pv/V") }
+	
+	property VBusItem bmv_voltage: VBusItem { bind: Utils.path(batteryPrefix, "/Dc/0/Voltage") }
+	property VBusItem bms_voltage: VBusItem { bind: Utils.path(chargeryBMSPrefix, "/Raw/Voltages/Sum") }
+
+
+	SystemState {
+		id: state
+		bind: Utils.path(inverterPrefix, "/State")
+	}
+
 
 	title: qsTr("System Overview")
 
@@ -55,6 +66,11 @@ OverviewPage {
 		return totalPower.value / voltage.value
 	}	
 
+	function get_voltage_drop()
+	{
+		return bms_voltage.value - bmv_voltage.value
+	}
+
 
 	Column {
 
@@ -96,6 +112,39 @@ OverviewPage {
 
 
 		Rectangle {
+			id: inverterRectangle
+
+			width: 480
+			height: 70
+			color: "#873e23"
+			
+			MbItemRowTOBO {
+				id: inverterStatus
+				description: qsTr("L1 (A/VA/W)")
+				
+				values: [
+					MbTextBlock { item.bind: Utils.path(inverterPrefix, "/Ac/Out/L1/I"); width: 85; height: 25 },
+					MbTextBlock { item.bind: Utils.path(inverterPrefix, "/Ac/Out/L1/S"); width: 85; height: 25 },
+					MbTextBlock { item.bind: Utils.path(inverterPrefix, "/Ac/Out/L1/P"); width: 85; height: 25 }
+				]
+			}
+
+			MbItemRowTOBO {
+				id: inverterStatus2
+			 	anchors.top: inverterStatus.bottom
+				description: qsTr("Temp | L1 (V) | State")
+				
+				values: [
+					MbTextBlock { item.bind: Utils.path(batteryPrefix, "/Dc/0/Temperature"); item.unit: "°C"; width: 85; height: 25 },
+					MbTextBlock { item.bind: Utils.path(inverterPrefix, "/Ac/Out/L1/V"); width: 85; height: 25 },
+					MbTextBlock { item.value: state.text; width: 85; height: 25 }
+				]
+			}
+
+		}
+
+
+		Rectangle {
 			id: batteryRectangle
 
 			width: 480
@@ -105,11 +154,6 @@ OverviewPage {
 			VBusItem {
 				id: batteryTimeToGo
 				bind: Utils.path(batteryPrefix, "/TimeToGo")
-			}
-
-			VBusItem {
-				id: batteryTimeLastFullCharge
-				bind: Utils.path(batteryPrefix, "/History/TimeSinceLastFullCharge")
 			}
 
 			MbItemRowTOBO {
@@ -140,7 +184,7 @@ OverviewPage {
 			id: pvRectangle
 
 			width: 480
-			height: 105
+			height: 70
 			color: "#FF2D2D"
 
 			MbItemRowTOBO {
@@ -171,47 +215,24 @@ OverviewPage {
 				]
 			}
 
-			MbItemRowTOBO {
-				id : pvYield
-			 	anchors.top: pvDisplay.bottom
-				description: qsTr("Yield (Tod/D-1/D-2)")
-
-				values: [
-					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/History/Daily/0/Yield"); width: 85; visible: true; height: 25 },
-					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/History/Daily/1/Yield"); width: 85; height: 25 },
-					MbTextBlock { item.bind: Utils.path(solarchargerPrefix, "/History/Daily/2/Yield"); width: 85; height: 25 }
-				]
-			}
-
 		}
 
 		Rectangle {
 			id: bmsRectangle
 
 			width: 480
-			height: 70
+			height: 35
 			color: "#404040"
 
 			MbItemRowTOBO {
 				id : bmsCellView1
-				description: qsTr("Cells (Min/Max/Diff)")
+				description: qsTr("BMS (Drop/Avg/Diff)")
 				values: [
-					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Min"); width: 85; height: 25 },
-					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Max"); width: 85; height: 25 },
+					MbTextBlock { item.value: get_voltage_drop(); item.decimals: 2; item.unit: "V"; width: 85; visible: true; height: 25 },
+					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Avg"); width: 85; height: 25 },
 					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Diff"); width: 85; height: 25 }
 				]
 			}
-			
-			MbItemRowTOBO {
-				id : bmsCellView2
-			 	anchors.top: bmsCellView1.bottom
-				description: qsTr("Voltage | Temp (1/2)")
-				values: [
-					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Voltages/Sum"); width: 85; height: 25 },
-					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Raw/Info/Temp/Sensor1"); width: 85; height: 25; item.decimals: 1; item.unit: "°C" },
-					MbTextBlock { item.bind: Utils.path(chargeryBMSPrefix, "/Raw/Info/Temp/Sensor2"); width: 85; height: 25; item.decimals: 1; item.unit: "°C" }
-				]
-			}	
 
 		}
 
