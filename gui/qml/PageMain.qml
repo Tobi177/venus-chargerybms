@@ -69,6 +69,11 @@ MbPage {
 	}
 
 	Component {
+		id: batteryPageChargeryBMS
+		PageBatteryChargeryBMS {}
+	}
+
+	Component {
 		id: batteryPage
 		PageBattery {}
 	}
