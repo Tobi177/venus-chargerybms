@@ -5,28 +5,56 @@ MbPage {
 	id: root
 	title: qsTr("Device List")
 
-	model: VisualItemModel {
-		MbSubMenu {
-			id: menuNotifications
-			description: qsTr("Notifications")
-			item: VBusItem {
-				property variant active: NotificationCenter.notifications.filter(
-											 function isActive(obj) { return obj.active} )
-				value: active.length > 0 ? active.length : ""
+	model: VisualModels {
+		VisualDataModel {
+			model: VeSortFilterProxyModel {
+				model: DeviceList {
+					id: deviceList
+					onRowsAboutToBeRemoved: {
+						for (var i = first; i <= last; i++)
+							deviceList.page(i).destroy()
+					}
+				}
+				sortRole: DeviceList.DescriptionRole
+				dynamicSortFilter: true
+				naturalSort: true
+				sortCaseSensitivity: Qt.CaseInsensitive
 			}
-			subpage: Component { PageNotifications {} }
-		}
 
-		MbSubMenu {
-			description: qsTr("Settings")
-			subpage: Component { PageSettings {} }
+			delegate: MbDevice {
+				iconId: "icon-toolbar-enter"
+				service: model.page.service
+				subpage: model.page
+			}
 		}
-	}
+		VisibleItemModel {
+			MbSubMenu {
+				id: menuNotifications
+				description: qsTr("Notifications")
+				item: VBusItem {
+					property variant active: NotificationCenter.notifications.filter(
+												 function isActive(obj) { return obj.active} )
+					value: active.length > 0 ? active.length : ""
+				}
+				subpage: Component { PageNotifications {} }
+			}
 
-	Component {
-		id: submenuLoader
-		MbDevice {
-			iconId: "icon-toolbar-enter"
+			MbSubMenu {
+				description: qsTr("Settings")
+				subpage: Component { PageSettings {} }
+			}
+
+			MbOK {
+				description: qsTr("Remove disconnected devices")
+				value: qsTr("Press to remove")
+				show: deviceList.disconnectedDevices != 0
+				editable: true
+
+				function clicked() {
+					listview.decrementCurrentIndex()
+					deviceList.removeDisconnected()
+				}
+			}
 		}
 	}
 
@@ -36,13 +64,13 @@ MbPage {
 	}
 
 	Component {
-		id: batteryPage
-		PageBattery {}
+		id: multiRsPage
+		PageMultiRs {}
 	}
 
 	Component {
-		id: batteryPageChargeryBMS
-		PageBatteryChargeryBMS {}
+		id: batteryPage
+		PageBattery {}
 	}
 
 	Component {
@@ -100,15 +128,33 @@ MbPage {
 		PageMeteo {}
 	}
 
+	Component {
+		id: evChargerPage
+		PageEvCharger {}
+	}
+
+	Component {
+		id: dcMeterPage
+		PageDcMeter {}
+	}
+
+	Component {
+		id: alternatorPage
+		PageAlternator {}
+	}
+
 	function addService(service)
 	{
 		var name = service.name
-		
+
 		var page
 		switch(service.type)
 		{
 		case DBusService.DBUS_SERVICE_MULTI:
 			page = vebusPage
+			break;
+		case DBusService.DBUS_SERVICE_MULTI_RS:
+			page = multiRsPage
 			break;
 		case DBusService.DBUS_SERVICE_BATTERY:
 			if (service.name == "com.victronenergy.battery.ttyCHGBMS01") {
@@ -160,35 +206,34 @@ MbPage {
 			break;
 		case DBusService.DBUS_SERVICE_VECAN:
 			return;
+		case DBusService.DBUS_SERVICE_EVCHARGER:
+			page = evChargerPage
+			break
+		case DBusService.DBUS_SERVICE_ACLOAD:
+			page = acInPage
+			break
+		case DBusService.DBUS_SERVICE_HUB4:
+			return;
+		case DBusService.DBUS_SERVICE_FUELCELL:
+		case DBusService.DBUS_SERVICE_DCSOURCE:
+		case DBusService.DBUS_SERVICE_DCLOAD:
+		case DBusService.DBUS_SERVICE_DCSYSTEM:
+			page = dcMeterPage
+			break
+		case DBusService.DBUS_SERVICE_ALTERNATOR:
+			page = alternatorPage
+			break
 		default:
 			console.log("unknown service " + name)
 			return;
 		}
 
-		var submenu = submenuLoader.createObject(root)
-		submenu.service = service
-
-		// option 1, load when being opened
-		// submenu.subpage = page
-		// submenu.subpageProperties = {service: service}
-
-		// option 2, create it now
-		submenu.subpage = page.createObject(submenu, {service: service, bindPrefix: service.name})
-
-		// sort on (initial) description
-		var i = 0
-		for (i = 0; i < model.count - 2; i++ ) {
-			if (model.children[i].description.localeCompare(service.description) > 0)
-				break;
-		}
-
-		model.insert(i, submenu)
+		deviceList.append(service, page.createObject(root, {service: service, bindPrefix: service.name}))
 	}
 
 	Component.onCompleted: {
 		for (var i = 0; i < DBusServices.count; i++)
 			addService(DBusServices.at(i))
-		listview.currentIndex = 0
 	}
 
 	Connections {
