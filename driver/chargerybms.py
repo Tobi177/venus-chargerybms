@@ -13,6 +13,7 @@ import serial
 import math
 import struct
 import decimal
+import traceback
 
 # setup timezone
 os.environ['TZ'] = 'Europe/Berlin'
@@ -31,10 +32,12 @@ driver = {
 	'servicename' : "chargerybms",
 	'instance'    : 1,
 	'id'          : 0x01,
-	'version'     : 1.4,
+	'version'     : 1.5,
 	'serial'      : "CHGBMS11062020A1",
 	'connection'  : "com.victronenergy.battery.ttyCHGBMS01"
 }
+
+logging.info("Starting Chargery BMS driver " + str(driver['version']))
 
 
 parser = argparse.ArgumentParser(description = 'Chargery BMS driver')
@@ -49,11 +52,6 @@ args = parser.parse_args()
 if args.debug: # switch to debug level
 	logger = logging.getLogger()
 	logger.setLevel(logging.DEBUG)
-
-
-serial_port = serial.Serial(args.device, 115200, timeout=1)
-serial_port.flushInput()
-logging.info(serial_port.name)  
 
 
 # victron stuff should be used
@@ -82,6 +80,9 @@ if args.victron:
 	dbusservice.add_path('/HardwareVersion', driver['version'])
 	dbusservice.add_path('/Serial',          driver['serial'])
 	dbusservice.add_path('/Connected',       1)
+	
+	# Create alarms
+	dbusservice.add_path('/Alarms/InternalFailure', 0)
 
 	# Create device list
 	dbusservice.add_path('/Devices/0/DeviceInstance',  driver['instance'])
@@ -243,6 +244,50 @@ if args.victron:
 	dbusservice.add_path('/Raw/Impedances/Min',                -1)
 	dbusservice.add_path('/Raw/Impedances/Avg',                -1)
 	dbusservice.add_path('/Raw/Impedances/UpdateTimestamp',    -1)
+
+
+try:
+
+	logging.info("Open serial port " + args.device)
+	serial_port = serial.Serial(args.device, 115200, timeout=1)
+
+except Exception as e:
+	print(e);
+	print(traceback.format_exc())
+	
+	logging.info("Serial port failed at " + args.device)
+
+	# try /dev/ttyUSB1, if /dev/ttyUSB0 is
+	# blocked because of a shutdown
+	if (args.device == "/dev/ttyUSB0"):
+		try:
+
+			new_device = "/dev/ttyUSB1"
+			logging.info("Open serial port " + new_device)
+			serial_port = serial.Serial(new_device, 115200, timeout=1)
+
+		except Exception as e:
+
+			print(e);
+			print(traceback.format_exc())
+	
+			logging.info("Serial port failed at " + new_device)
+
+			quit()
+
+		else:
+			dbusservice['/Alarms/InternalFailure'] = 1
+			
+	else:
+		quit()
+
+
+serial_port.flushInput()
+logging.info(serial_port.name)
+if args.victron:
+	dbusservice['/Mgmt/Connection'] = serial_port.name
+
+
 
 
 PACKET_HEADER             = 0x24
@@ -1612,12 +1657,21 @@ def handle_serial_data():
 		if args.victron:	
 			# recheck every second
 			gobject.timeout_add(1000, handle_serial_data)
+		
 
 	except KeyboardInterrupt:
 		if not args.victron:
 			raise
-	except:
-		raise
+
+	except Exception as e:
+		print(e);
+		print(traceback.format_exc())
+
+		if args.victron:
+			dbusservice['/Alarms/InternalFailure'] = 1
+
+		serial_port.close()
+		quit()
 
 
 if args.victron:

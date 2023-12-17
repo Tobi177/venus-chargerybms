@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Start script for BMV vedirect
+# Start script for Chargery BMS
 #	First parameter: tty device to use
 #
 # Keep this script running with daemon tools. If it exits because the
